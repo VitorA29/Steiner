@@ -1,1 +1,1 @@
-./bin/steiner instances/geo_original/
+./bin/steiner instances/geo_original/G101.stp

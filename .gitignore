@@ -3,3 +3,4 @@ Luftschlange-ms-steiner-puw-324769b/instances/
 
 #Ignoring Compiled Files
 Luftschlange-ms-steiner-puw-324769b/bin/
+*.out

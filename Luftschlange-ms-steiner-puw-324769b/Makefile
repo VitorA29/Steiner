@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -std=c++11 -O3 -fopenmp -DNDEBUG
+CXXFLAGS = -std=c++11 -O3 -fopenmp -DNDEBUG -w
 LDFLAGS =
 BIN = ./bin
 SRC = ./src
@@ -18,6 +18,10 @@ steiner: rfw_timer rfw_random
 	$(CXX) $(CXXFLAGS) -o $(BIN)/steiner.o -c $(SRC)/steiner.cpp
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $(BIN)/steiner $(BIN)/steiner.o $(BIN)/rfw_random.o $(BIN)/rfw_timer.o
 	rm $(BIN)/rfw_random.o $(BIN)/rfw_timer.o $(BIN)/steiner.o
+
+debug: rfw_timer rfw_random
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -g $(SRC)/steiner.cpp $(BIN)/rfw_random.o $(BIN)/rfw_timer.o
+	rm $(BIN)/rfw_random.o $(BIN)/rfw_timer.o
 
 clean:
 	rm -f $(BIN)/*
