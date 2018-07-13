@@ -166,6 +166,7 @@ public:
 	}
 
 	void Output(FILE *file, int columns) {
+		FILE *fp = fopen("Elite.txt", "w");
 		for (int i=1; i<=count; i++) {
 			int column = (i-1) % columns;
 			if (column == 0) {
@@ -173,8 +174,11 @@ public:
 				fprintf (file, "%5d :", i);
 			}
 			fprintf (stderr, " %6lg", sol[i] ? (double)sol[i]->GetCost() : -1.0);
+			fprintf (fp, "Index %d: %6lg\n", i, sol[i] ? (double)sol[i]->GetCost() : -1.0);
+			sol[i]->Output(fp);
 		}
 		fprintf (stderr, "\n");
+		fclose(fp);
 	}
 
 

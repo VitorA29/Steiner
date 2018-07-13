@@ -1,1 +1,1 @@
-./bin/steiner instances/geo_original/G101.stp
+./bin/steiner instances/geo_original/G101.stp -msit 1
