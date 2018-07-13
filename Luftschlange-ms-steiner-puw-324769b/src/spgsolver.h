@@ -485,7 +485,9 @@ public:
 
 
 		if (MULTISTART) {
-			RunMultistart(g, mstype, msit, bestfound, bestknown, config, name, NULL, &executionLog, &bestSolution);
+			// RunMultistart(g, mstype, msit, bestfound, bestknown, config, name, NULL, &executionLog, &bestSolution);
+			SteinerConfig *auxConfig = new SteinerConfig();
+			EliteMultistart(bestSolution, 20, 10, "eliteFile", auxConfig);
 		}
 
 		if (LOCALSEARCH) {
@@ -766,10 +768,10 @@ public:
 
 		RFWLocalRandom random (RFWRandom::getInteger(1,999999999));
 
-		SolutionPool elite(maxit);
+		SolutionPool elite(capacity);
 
-		for (int i=0; i<999999; i++) {
-			CombinationMultistart(solution, maxit, capacity, NULL, 0);
+		for (int i=0; i<maxit; i++) {
+			CombinationMultistart(solution, maxit, capacity, NULL, 0, config);
 			EdgeCost curcost = solution.GetCost();
 
 			fprintf (stderr, "Should be adding solution %.0f to capacity %d.\n", (double)curcost, capacity);
@@ -787,8 +789,8 @@ public:
 				bestcost = curcost;
 			}
 
-			fprintf (stderr, "Iteration %d: %.0f\n", i, (double)bestsol.GetCost());
-
+			fprintf (stderr, "Iteration %d: %.0f, pool: %d\n", i, (double)bestsol.GetCost(), elite.GetCount());
+			
 			elite.Output(stderr, 8);
 		}
 
