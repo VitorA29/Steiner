@@ -186,7 +186,7 @@ public:
 
 	typedef enum { MS_PLAIN, MS_COMBINATION, MS_BINARY, MS_MULTILEVEL, MS_TIMEBOUNDEDCOMBINATION, MS_TIMEBOUNDEDMULTILEVEL, MS_TIMEBOUNDEDADAPTIVE, MS_NUMBER } MSType;
 	static void ShowUsage () {
-		fprintf (stderr, "Usage: steiner <stp_file> [-bb] [-ub] [-prep] [-msit] [-seed] [-mstype]\n");
+		fprintf (stderr, "Usage: steiner <stp_file> [-bb] [-ub] [-prep] [-msit] [-seed] [-mstype] [-elite]\n");
 		fprintf (stderr, "Valid types: plain(%d) combination(%d) binary(%d) multilevel(%d)\n", MS_PLAIN, MS_COMBINATION, MS_BINARY, MS_MULTILEVEL);
 		exit (-1);
 	}
@@ -300,12 +300,14 @@ public:
 		bool BINARYMULTISTART = true;
 		int mstype = MS_COMBINATION;
 		int msit = 0;
+		bool USEMEMORY = false;
+		int elite_cap = 0;
 
 		int seed = 17;
 		EdgeCost primal = INFINITE_COST;
 
 		//fprintf (stderr, "ARGC is %d\n", argc);
-		SteinerConfig config;
+		SteinerConfig config = new SteinerConfig();
 
 		for (int i=2; i<argc; i+=2) {
 			if (i == argc-1) ShowUsage();
@@ -370,6 +372,12 @@ public:
 				continue;
 			}
 
+			if (strcmp(argv[i], "-elite")==0) {
+				elite_cap = atoi(argv[i+1]);
+				fprintf (stderr, "Set elite capacity to %d.\n", elite_cap);
+				continue;
+			}
+
 			//maybe config knows what to do with this parameter
 			config.ReadParameter (argv[i], argv[i+1]);
 		}
@@ -393,6 +401,8 @@ public:
 		ExecutionLog executionLog(&g, &timer, config.TIME_LIMIT);
 
 		MULTISTART = (msit != 0);
+
+		USEMEMORY = (elite_cap != 0);
 
 		RFWRandom::randomize(seed);
 
@@ -485,9 +495,12 @@ public:
 
 
 		if (MULTISTART) {
-			// RunMultistart(g, mstype, msit, bestfound, bestknown, config, name, NULL, &executionLog, &bestSolution);
-			SteinerConfig *auxConfig = new SteinerConfig();
-			EliteMultistart(bestSolution, 20, 10, "eliteFile", auxConfig);
+			if (!USEMEMORY){
+				RunMultistart(g, mstype, msit, bestfound, bestknown, config, name, NULL, &executionLog, &bestSolution);
+			}
+			else{
+				EliteMultistart(bestSolution, msit, elite_cap, "eliteFile", config);
+			}
 		}
 
 		if (LOCALSEARCH) {
