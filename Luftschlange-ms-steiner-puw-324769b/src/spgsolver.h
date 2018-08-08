@@ -192,7 +192,7 @@ public:
 	}
 
 	
-	static void RunMultistart(Graph &g, int mstype, int msit, EdgeCost &gbestfound, EdgeCost &bestknown, SteinerConfig &config, char *name, GlobalInfo *ginfo, ExecutionLog *executionLogPtr, SteinerSolution *outSolution) {
+	static void RunMultistart(Graph &g, int mstype, int msit, EdgeCost &gbestfound, EdgeCost &bestknown, SteinerConfig *config, char *name, GlobalInfo *ginfo, ExecutionLog *executionLogPtr, SteinerSolution *outSolution) {
 		double mstime = 0;
 		EdgeCost mscost = g.GetFixedCost();
 		int elite = -1;
@@ -207,7 +207,7 @@ public:
 			if (mstype == MS_TIMEBOUNDEDCOMBINATION || mstype == MS_TIMEBOUNDEDMULTILEVEL || mstype == MS_TIMEBOUNDEDADAPTIVE) {
 				SteinerSolution solution(&g);
 				RFWTimer mstimer(true);
-				TimeBoundedMultistart(solution, mstype, msit, config.OUTPUT_INCUMBENT ? name : NULL, -1, &config, ginfo, executionLogPtr);
+				TimeBoundedMultistart(solution, mstype, msit, config->OUTPUT_INCUMBENT ? name : NULL, -1, config, ginfo, executionLogPtr);
 				mstime = mstimer.getTime();
 				if (outSolution != nullptr) {
 					outSolution->CopyFrom(&solution);
@@ -216,8 +216,8 @@ public:
 			}
 			else {
 				int doneit = 0;
-				for (int maxit = (config.TIME_LIMIT <= 0 ? (msit <= 0 ? 2 : msit) : 2);
-					 (msit <= 0 || doneit < msit) && (config.TIME_LIMIT <= 0 || executionLogPtr->timerPtr->getTime() < config.TIME_LIMIT);
+				for (int maxit = (config->TIME_LIMIT <= 0 ? (msit <= 0 ? 2 : msit) : 2);
+					 (msit <= 0 || doneit < msit) && (config->TIME_LIMIT <= 0 || executionLogPtr->timerPtr->getTime() < config->TIME_LIMIT);
 					 maxit *= 2)
 				{
 					SteinerSolution solution(&g);
@@ -227,10 +227,10 @@ public:
 					fprintf(stderr, "RUNNING %d ITERATIONS (%d ALREADY DONE IN %.2f SEC).\n", curit, doneit, executionLogPtr->timerPtr->getTime());
 					RFWTimer mstimer(true);
 					switch (mstype) {
-						case MS_PLAIN: PlainMultistart(solution, curit, -1, &config); break;
-						case MS_COMBINATION: CombinationMultistart(solution, curit, elite, config.OUTPUT_INCUMBENT ? name : NULL, -1, &config, ginfo, executionLogPtr); break;
-						case MS_BINARY:	BinaryMultistart(solution, curit, name, &config); break;
-						case MS_MULTILEVEL: MultilevelMultistart(solution, curit, curit, elite, config.OUTPUT_INCUMBENT ? name : NULL, -1, &config); break;
+						case MS_PLAIN: PlainMultistart(solution, curit, -1, config); break;
+						case MS_COMBINATION: CombinationMultistart(solution, curit, elite, config->OUTPUT_INCUMBENT ? name : NULL, -1, config, ginfo, executionLogPtr); break;
+						case MS_BINARY:	BinaryMultistart(solution, curit, name, config); break;
+						case MS_MULTILEVEL: MultilevelMultistart(solution, curit, curit, elite, config->OUTPUT_INCUMBENT ? name : NULL, -1, config); break;
 					};
 					doneit += curit;
 					mstime += mstimer.getTime();
@@ -307,7 +307,7 @@ public:
 		EdgeCost primal = INFINITE_COST;
 
 		//fprintf (stderr, "ARGC is %d\n", argc);
-		SteinerConfig config = new SteinerConfig();
+		SteinerConfig *config = new SteinerConfig();
 
 		for (int i=2; i<argc; i+=2) {
 			if (i == argc-1) ShowUsage();
@@ -379,26 +379,26 @@ public:
 			}
 
 			//maybe config knows what to do with this parameter
-			config.ReadParameter (argv[i], argv[i+1]);
+			config->ReadParameter (argv[i], argv[i+1]);
 		}
 
 		fflush (stderr);
 
-		if (config.EARLY_STOP_BOUND < 0) {config.EARLY_STOP_BOUND = bestknown;}
+		if (config->EARLY_STOP_BOUND < 0) {config->EARLY_STOP_BOUND = bestknown;}
 
 		bestfound = primal;
-		config.Output(stdout);
+		config->Output(stdout);
 		fprintf (stdout, "seed %d\n", seed);
 
 		// if there is a best known solution, output it whenever we find it
-		if (config.OUTPUT_THRESHOLD<0 && bestknown>=0) {
-			config.OUTPUT_THRESHOLD = bestknown;
+		if (config->OUTPUT_THRESHOLD<0 && bestknown>=0) {
+			config->OUTPUT_THRESHOLD = bestknown;
 		}
 		
 		RFWTimer timer(true);
 
 		// solution cost log.
-		ExecutionLog executionLog(&g, &timer, config.TIME_LIMIT);
+		ExecutionLog executionLog(&g, &timer, config->TIME_LIMIT);
 
 		MULTISTART = (msit != 0);
 
@@ -449,8 +449,8 @@ public:
 
 			GlobalInfo ginfo;
 			ginfo.fixed = g.GetFixedCost();
-			config.DEPTH_LIMIT = 128;
-			fprintf (stderr, "Setting depth limit to %d.\n", config.DEPTH_LIMIT);
+			config->DEPTH_LIMIT = 128;
+			fprintf (stderr, "Setting depth limit to %d.\n", config->DEPTH_LIMIT);
 
 
 			omp_set_num_threads(2);
@@ -547,8 +547,8 @@ public:
 		Basics::ReportResults(stdout, "totalcpu", walltime + second_time, bestfound, bestknown);
 
 		// Dump official output logs.
-		if (!config.LOG_FILENAME.empty()) {
-			ofstream logFile(config.LOG_FILENAME.c_str());
+		if (!config->LOG_FILENAME.empty()) {
+			ofstream logFile(config->LOG_FILENAME.c_str());
 			if (logFile.is_open()) {
 				logFile << "SECTION Comment" << endl
 					<< "Name \"" << name << "\"" << endl

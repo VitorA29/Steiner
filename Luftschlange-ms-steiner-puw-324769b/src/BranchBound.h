@@ -160,7 +160,7 @@ public:
 	};
 
 
-	static void RunBranchAndBound(Graph &g, int seed, EdgeCost &primal, EdgeCost bestfound, EdgeCost bestknown, SteinerConfig &config, GlobalInfo *ginfo, ExecutionLog *executionLogPtr) {
+	static void RunBranchAndBound(Graph &g, int seed, EdgeCost &primal, EdgeCost bestfound, EdgeCost bestknown, SteinerConfig *config, GlobalInfo *ginfo, ExecutionLog *executionLogPtr) {
 		fprintf (stderr, "RUNNING BRANCH AND BOUND WITH FIXED %.3f\n", g.GetFixedCost());
 		fflush(stderr);
 		RFWTimer timer(true);
@@ -1951,13 +1951,13 @@ public:
 	//---------------------------------------------
 	// Simple DFS-based branch-and-bound algorithm 
 	//---------------------------------------------
-	static int BBound(Graph &g, vector<int> &vfix, vector<int> &efix, EdgeCost &primal, int depth, int seed, int root, BBStats *bbstats, BBNodeInfo bbinfo, bool probe, SteinerConfig &config, vector<double> &priority, int *ekeep, ExecutionLog *executionLogPtr = nullptr) {
+	static int BBound(Graph &g, vector<int> &vfix, vector<int> &efix, EdgeCost &primal, int depth, int seed, int root, BBStats *bbstats, BBNodeInfo bbinfo, bool probe, SteinerConfig *config, vector<double> &priority, int *ekeep, ExecutionLog *executionLogPtr = nullptr) {
 		//fprintf (stderr, " <%d", depth); fflush(stderr);
 		static double maxsubtree = 0; //size of maximum-weight subtree at depth VERBOSE_DEPTH
 
 
 		//vector<double> priority;
-		if (depth > config.DEPTH_LIMIT) {
+		if (depth > config->DEPTH_LIMIT) {
 			int m = g.EdgeCount();
 			if (bbstats->ginfo) bbstats->ginfo->bbpruned = 1;
 			if (ekeep) {
@@ -1967,7 +1967,7 @@ public:
 					if (ekeep[e]) kept ++;
 				}
 				//fprintf (stderr, "%d/%d ", kept, m);
-				if (kept > 9*m/10) config.DEPTH_LIMIT = 0;
+				if (kept > 9*m/10) config->DEPTH_LIMIT = 0;
 			}
 			return 0;
 		}
@@ -1989,7 +1989,7 @@ public:
 
 		Graph sub;
 		GraphMapper mapper;
-		bool verbose_depth = (depth==config.VERBOSE_DEPTH);
+		bool verbose_depth = (depth==config->VERBOSE_DEPTH);
 		if (verbose_depth) {
 			fprintf (stderr, "B%d ", depth);
 			fflush(stderr);
@@ -2098,7 +2098,7 @@ public:
 					priority.resize(n+1);
 					std::fill(priority.begin(), priority.end(), 1);
 				} else {
-					ScatterBranch(priority, sub, 1000, 32 - depth, seed, root, primal, 0, &config, executionLogPtr);
+					ScatterBranch(priority, sub, 1000, 32 - depth, seed, root, primal, 0, config, executionLogPtr);
 					if (EXPZERO > 1) {
 						for (int v=0; v<=n; v++) {
 							double p = priority[v];
@@ -2110,7 +2110,7 @@ public:
 
 				if (EXPONE > 0) {
 					vector<double> p1 (n+1,-1);
-					ScatterBranch(p1, sub, 2000, 10, seed, root, primal, 1, &config, executionLogPtr);
+					ScatterBranch(p1, sub, 2000, 10, seed, root, primal, 1, config, executionLogPtr);
 					for (int v=0; v<=n; v++) {
 						double p = p1[v];
 						for (int i=0; i<EXPONE; i++) priority[v] *= p;
@@ -2119,15 +2119,15 @@ public:
 				}
 			} else {
 				if (depth>0) {
-					ScatterBranch(priority, sub, 1000, 32 - depth, seed, root, primal, 0, &config, executionLogPtr);
+					ScatterBranch(priority, sub, 1000, 32 - depth, seed, root, primal, 0, config, executionLogPtr);
 				} else {
-					ScatterBranch(priority, sub, 1000, 10, seed, root, primal, 1, &config, executionLogPtr);
+					ScatterBranch(priority, sub, 1000, 10, seed, root, primal, 1, config, executionLogPtr);
 				}
 			}
 		}
 
 		// run dual ascent, run primal heuristic, and find branching node
-		EdgeCost dual = DualAscent(sub, primal, efix, &mapper, bnode, 0, seed, root, bbstats, depth>MAX_SCATTER_USE ? NULL : &priority[0], true, true, &config, executionLogPtr);
+		EdgeCost dual = DualAscent(sub, primal, efix, &mapper, bnode, 0, seed, root, bbstats, depth>MAX_SCATTER_USE ? NULL : &priority[0], true, true, config, executionLogPtr);
 
 		mapper.Destroy();
 
@@ -2186,10 +2186,10 @@ public:
 				if (sub.GetDegree(bnode)<3) fprintf (stderr, " %d", sub.GetDegree(bnode));
 
 				EdgeCost gap = primal - dual;
-				bool ALLOW_SB = config.STRONG_BRANCHING;
-				int smalldepth = config.SB_LOW;
-				int largedepth = config.SB_HIGH;
-				int refgap = config.SB_GAP;
+				bool ALLOW_SB = config->STRONG_BRANCHING;
+				int smalldepth = config->SB_LOW;
+				int largedepth = config->SB_HIGH;
+				int refgap = config->SB_GAP;
 
 
 				bool STRONG_BRANCHING = (depth<smalldepth) || (depth<largedepth && gap>refgap); //(depth<20); //(gap > 400);
@@ -2198,7 +2198,7 @@ public:
 				if (STRONG_BRANCHING) {
 					//warning("g");
 					fprintf (stderr, "Gap is %d => strong branch at depth %d (side %d)!\n", gap, depth, bbinfo.lastbranch);
-					int newbnode = StrongBranching(sub,primal,efix,root,seed,depth,&config, executionLogPtr);
+					int newbnode = StrongBranching(sub,primal,efix,root,seed,depth,config, executionLogPtr);
 					fprintf (stderr, "Branching on %d (had %d before).\n", newbnode, bnode);
 					bnode = newbnode;
 				}
@@ -2229,16 +2229,16 @@ public:
 				//warning("h");
 				//if (depth == 10) fprintf (stdout, "%d %d\n", bnode, g.GetDegree(bnode));
 				bool zerofirst;
-				int fb = config.FIRST_BRANCH;
+				int fb = config->FIRST_BRANCH;
 				if (fb <= 0) {zerofirst = true;} 
 				else if (fb == 1) {zerofirst = false;} 
 				else {zerofirst = (RFWRandom::getInteger(1,fb)==1);}
 				/*
-				switch (config.FIRST_BRANCH) {
+				switch (config->FIRST_BRANCH) {
 					case 0: zerofirst = true; break;
 					case 1: zerofirst = false
 
-				bool zerofirst = (config.ZERO_FIRST != 0); //(RFWRandom::getInteger(0,1)>0);
+				bool zerofirst = (config->ZERO_FIRST != 0); //(RFWRandom::getInteger(0,1)>0);
 				//fprintf (stderr, "[[%d]] ", zerofirst);
 				zerofirst = (RFWRandom::getInteger(0,1)>0);
 				*/
@@ -2649,7 +2649,7 @@ public:
 		vector<double> priority; 
 		fprintf (stderr, "WARNING: PRIORITY NOT SET!\n");
 		exit(-1);
-		int count = BBound(g, vfix, efix, primal, 0, seed, root, &bbstats, BBNodeInfo(), true, config, priority, NULL);
+		int count = BBound(g, vfix, efix, primal, 0, seed, root, &bbstats, BBNodeInfo(), true, &config, priority, NULL);
 		return bbstats.GetTotalNodes();
 	}
 
