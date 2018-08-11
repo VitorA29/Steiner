@@ -368,7 +368,6 @@ private:
 	vector <SPGArc> arclist;
 	vector <int> first;
 	//vector <bool> terminal;
-	GraphDescriptor gd;
 
 	void fatal (const string &msg) {
 		fprintf (stderr, "ERROR: %s.\n", msg.c_str());
@@ -376,6 +375,8 @@ private:
 	}
 
 public:
+	GraphDescriptor gd;
+
 	Coordinates coord;
 
 	Graph () {

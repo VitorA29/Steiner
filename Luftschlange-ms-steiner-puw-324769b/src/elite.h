@@ -167,6 +167,7 @@ public:
 
 	void Output(FILE *file, int columns) {
 		FILE *fp = fopen("Elite.txt", "w");
+		FILE *fd = fopen("Elite - Descriptor.txt", "w");
 		for (int i=1; i<=count; i++) {
 			int column = (i-1) % columns;
 			if (column == 0) {
@@ -176,6 +177,13 @@ public:
 			fprintf (stderr, " %6lg", sol[i] ? (double)sol[i]->GetCost() : -1.0);
 			fprintf (fp, "Index %d: %6lg\n", i, sol[i] ? (double)sol[i]->GetCost() : -1.0);
 			sol[i]->Output(fp);
+			int m = sol[i]->g->EdgeCount();
+			for (int e = 1; e<=m; e++) {
+				if (!sol[i]->Contains(e)) continue;
+				if (sol[i]->g->gd.terminal[e]) continue;
+                fprintf (fd, "%d\n", e);
+            }
+			fprintf (fd, "\n");
 		}
 		fprintf (stderr, "\n");
 		fclose(fp);
