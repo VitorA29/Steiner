@@ -1,1 +1,4 @@
 ./bin/steiner instances/geo_original/G101.stp -msit 32 -elite 10
+
+
+./bin/steiner instances/geo_original/G207.stp -msit 10 -elite 10

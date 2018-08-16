@@ -167,7 +167,9 @@ public:
 
 	void Output(FILE *file, int columns) {
 		FILE *fp = fopen("Elite.txt", "w");
-		FILE *fd = fopen("Elite - Descriptor.txt", "w");
+		FILE *fd = fopen("EliteArestas.txt", "w");
+		FILE *fv = fopen("EliteVertices.txt", "w");
+		printf("Count: %d\nCapacity:%d\n", count, capacity);
 		for (int i=1; i<=count; i++) {
 			int column = (i-1) % columns;
 			if (column == 0) {
@@ -177,16 +179,28 @@ public:
 			fprintf (stderr, " %6lg", sol[i] ? (double)sol[i]->GetCost() : -1.0);
 			fprintf (fp, "Index %d: %6lg\n", i, sol[i] ? (double)sol[i]->GetCost() : -1.0);
 			sol[i]->Output(fp);
+			bool vertices[sol[i]->g->VertexCount()];
+			for(int j = 0; j < sol[i]->g->VertexCount(); j++) vertices[j] = false;
 			int m = sol[i]->g->EdgeCount();
 			for (int e = 1; e<=m; e++) {
-				if (!sol[i]->Contains(e)) continue;
-				if (sol[i]->g->gd.terminal[e]) continue;
-                fprintf (fd, "%d\n", e);
+                if (!sol[i]->Contains(e)) continue;
+				//if (sol[i]->g->gd.terminal[e]) continue;
+                fprintf (fd, "%d ", e);
+                int v, w;
+                sol[i]->g->GetEndpoints(e, v, w);
+                vertices[v] = true;
+                vertices[w] = true;
             }
 			fprintf (fd, "\n");
-		}
+            for(int j = 0; j < sol[i]->g->VertexCount(); j++)
+                if(vertices[j] && !sol[i]->g->IsTerminal(j))
+                    fprintf(fv, "%d ", j);
+            fprintf(fv, "\n");
+            printf("Escreveu %d\n", i);
+        }
 		fprintf (stderr, "\n");
 		fclose(fp);
+		fclose(fv);
 	}
 
 

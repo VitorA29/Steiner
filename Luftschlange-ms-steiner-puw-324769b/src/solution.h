@@ -76,22 +76,22 @@ public:
 		return ecount;
 	}
 
-        void Output(FILE *file) {
-            fprintf (stderr, "Outputting solution..."); // to {0}... ", filename);
-            //System.IO.StreamWriter file = new System.IO.StreamWriter(@filename);
+	void Output(FILE *file) {
+		fprintf (stderr, "Outputting solution..."); // to {0}... ", filename);
+		//System.IO.StreamWriter file = new System.IO.StreamWriter(@filename);
 
 
-			int m = g->EdgeCount();
-            fprintf (file, "m %d\n", EdgeCount());
-            fprintf (file, "c %.0f\n", GetCost());
-            for (int e = 1; e<=m; e++) {
-				if (!Contains(e)) continue;
-                int v, w;
-                g->GetEndpoints(e, v, w);
-                fprintf (file, "e %d %d %.0f\n", v, w, g->GetCost(e));
-            }
-            fprintf (stderr, "done.\n");
-        }
+		int m = g->EdgeCount();
+		fprintf (file, "m %d\n", EdgeCount());
+		fprintf (file, "c %.0f\n", GetCost());
+		for (int e = 1; e<=m; e++) {
+			if (!Contains(e)) continue;
+			int v, w;
+			g->GetEndpoints(e, v, w);
+			fprintf (file, "e %d %d %.0f\n", v, w, g->GetCost(e));
+		}
+		fprintf (stderr, "done.\n");
+	}
 
 	void Output (char *prefix) {
 		char filename[2048];

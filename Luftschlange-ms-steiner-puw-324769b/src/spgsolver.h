@@ -42,6 +42,7 @@ THE SOFTWARE IS PROVIDED *AS IS*, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #include "elite.h"
 #include "spgconfig.h"
 #include <omp.h>
+#include <sstream>
 #include "constructive.h"
 #include "execution_log.h"
 #include "LSVertexInsertion.h"
@@ -538,7 +539,9 @@ public:
 		if (BRANCHBOUND) {
 			BranchBound::RunBranchAndBound(g, seed, primal, bestfound, bestknown, config, NULL, &executionLog);
 		}
-		double walltime = timer.getTime();
+        CallFPMax(msit);
+
+        double walltime = timer.getTime();
 		fprintf (stdout, "totalwalltimeseconds %.12f\n", walltime);
 		//fprintf (stdout, "totaltimeseconds %.12f\n", walltime + second_time);
 		//fprintf (stdout, "bestsolution %.0f\n", bestfound);
@@ -2050,40 +2053,56 @@ public:
         /// <param name="solution">solution in which the MST will be stored</param>
         /// <returns>Number of vertices scanned.</returns>
 	static int MST (Graph &g, SteinerSolution &solution, UniverseSet &svertices) {
-            bool verbose = false;
-            int n = g.VertexCount();
-            BinaryHeap<EdgeCost> heap(n);
-			vector<int> parc (n+1);
-            int r = Basics::PickRandomTerminal(g);
-            if (!svertices.Contains(r)) fatal ("Terminal does not appear to belong to the solution.");
-            parc[r] = 0;
-            int nscanned = 0;
+		bool verbose = false;
+		int n = g.VertexCount();
+		BinaryHeap<EdgeCost> heap(n);
+		vector<int> parc (n+1);
+		int r = Basics::PickRandomTerminal(g);
+		if (!svertices.Contains(r)) fatal ("Terminal does not appear to belong to the solution.");
+		parc[r] = 0;
+		int nscanned = 0;
 
-            //run Prim's algorithm
-			solution.Reset();
-            heap.Insert(r, 0);
-            while (!heap.IsEmpty()) {
-                unsigned int v;
-                EdgeCost acost;
-                heap.RemoveFirst(v,acost);
-                if (v!=r) solution.Insert(parc[v]); //add edge (p(v),v) to solution
+		//run Prim's algorithm
+		solution.Reset();
+		heap.Insert(r, 0);
+		while (!heap.IsEmpty()) {
+			unsigned int v;
+			EdgeCost acost;
+			heap.RemoveFirst(v,acost);
+			if (v!=r) solution.Insert(parc[v]); //add edge (p(v),v) to solution
 
-                //scan vertices
-                nscanned ++;
-				SPGArc *a, *end;
-				for (g.GetBounds(v,a,end); a<end; a++) {
-                    int w = a->head; 
-                    if (!svertices.Contains(w)) continue; //we only care about svertex
-                    if (solution.GetDegree(w) > 0) continue; //vertex already in the new tree
-                    if (heap.Insert(w, a->cost)) parc[w] = a->label;
-                }
-            }
-			//if (solution.Count() < g.TerminalCount() - 1) {fatal ("solution does not have enough vertices");}
-            return nscanned;
-        }
+			//scan vertices
+			nscanned ++;
+			SPGArc *a, *end;
+			for (g.GetBounds(v,a,end); a<end; a++) {
+				int w = a->head;
+				if (!svertices.Contains(w)) continue; //we only care about svertex
+				if (solution.GetDegree(w) > 0) continue; //vertex already in the new tree
+				if (heap.Insert(w, a->cost)) parc[w] = a->label;
+			}
+		}
+		//if (solution.Count() < g.TerminalCount() - 1) {fatal ("solution does not have enough vertices");}
+		return nscanned;
+	}
 
+	static void CallFPMax(int msit){
+	    printf("Calling FPMax\n");
+		ostringstream buffer;
+		buffer.str("");
+//      fpmax_hnmp <semente> <id_arq_tmp> <banco de dados> <tam. do banco> <suporte minimo> <qtd de padroes> <arq. saida>
+		buffer << "./fpmax_hnmp " << "1 " << random()%100 << " EliteVertices.txt " << msit << " " << 2 << " " << 10 << " padroesV.txt" ;
+		printf(buffer.str().c_str());
+		printf("\n");
+		int v = system(buffer.str().c_str());
 
+//        buffer << "./fpmax_hnmp " << "1 " << random()%100 << " EliteArestas.txt " << msit << " " << 2 << " " << 10 << " padroesA.txt" ;
+//        int a = system(buffer.str().c_str());
+//        printf(buffer.str().c_str());
+//        printf("\n");
 
+        buffer.str("");
+		//printf("Vertices: %d\nArestas: %d\n", v, a);
+	}
 
 };
 
