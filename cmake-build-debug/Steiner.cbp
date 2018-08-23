@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="Steiner"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/arthur/Projetos GitHub/Steiner/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/arthur/Projetos\ GitHub/Steiner/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/arthur/Projetos\ GitHub/Steiner/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/arthur/Projetos\ GitHub/Steiner/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/arthur/Projetos\ GitHub/Steiner/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/arthur/Projetos GitHub/Steiner/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/arthur/Projetos\ GitHub/Steiner/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/arthur/Projetos\ GitHub/Steiner/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/arthur/Projetos\ GitHub/Steiner/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/arthur/Projetos\ GitHub/Steiner/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/arthur/Projetos GitHub/Steiner/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/arthur/Projetos\ GitHub/Steiner/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/arthur/Projetos\ GitHub/Steiner/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/arthur/Projetos\ GitHub/Steiner/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/arthur/Projetos\ GitHub/Steiner/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Steiner">
+				<Option output="/home/arthur/Projetos GitHub/Steiner/cmake-build-debug/Steiner" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/arthur/Projetos GitHub/Steiner/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/arthur/Projetos GitHub/Steiner/."/>
+					<Add directory="/home/arthur/Projetos GitHub/Steiner/cdigofonteefpmax/FPmax"/>
+					<Add directory="/home/arthur/Projetos GitHub/Steiner/Luftschlange-ms-steiner-puw-324769b/src"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/arthur/Projetos\ GitHub/Steiner/cmake-build-debug/Makefile&quot;  VERBOSE=1 Steiner"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/arthur/Projetos\ GitHub/Steiner/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/arthur/Projetos\ GitHub/Steiner/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/arthur/Projetos\ GitHub/Steiner/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Steiner/fast">
+				<Option output="/home/arthur/Projetos GitHub/Steiner/cmake-build-debug/Steiner" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/arthur/Projetos GitHub/Steiner/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/arthur/Projetos GitHub/Steiner/."/>
+					<Add directory="/home/arthur/Projetos GitHub/Steiner/cdigofonteefpmax/FPmax"/>
+					<Add directory="/home/arthur/Projetos GitHub/Steiner/Luftschlange-ms-steiner-puw-324769b/src"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/arthur/Projetos\ GitHub/Steiner/cmake-build-debug/Makefile&quot;  VERBOSE=1 Steiner/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/arthur/Projetos\ GitHub/Steiner/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/arthur/Projetos\ GitHub/Steiner/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/arthur/Projetos\ GitHub/Steiner/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/Luftschlange-ms-steiner-puw-324769b/Elite - Descriptor.txt">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/Luftschlange-ms-steiner-puw-324769b/Elite - maxit 100.txt">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/Luftschlange-ms-steiner-puw-324769b/Elite.txt">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/Luftschlange-ms-steiner-puw-324769b/LICENSE.txt">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/Luftschlange-ms-steiner-puw-324769b/Makefile">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/Luftschlange-ms-steiner-puw-324769b/README.md">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/Luftschlange-ms-steiner-puw-324769b/bin/steiner">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/Luftschlange-ms-steiner-puw-324769b/running.txt">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/Luftschlange-ms-steiner-puw-324769b/src/BranchBound.h">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/Luftschlange-ms-steiner-puw-324769b/src/LSBasics.h">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/Luftschlange-ms-steiner-puw-324769b/src/LSKeyPath.h">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/Luftschlange-ms-steiner-puw-324769b/src/LSVertexElimination.h">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/Luftschlange-ms-steiner-puw-324769b/src/LSVertexInsertion.h">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/Luftschlange-ms-steiner-puw-324769b/src/binheap.h">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/Luftschlange-ms-steiner-puw-324769b/src/buckets.h">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/Luftschlange-ms-steiner-puw-324769b/src/constructive.h">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/Luftschlange-ms-steiner-puw-324769b/src/drawer.h">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/Luftschlange-ms-steiner-puw-324769b/src/dual.h">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/Luftschlange-ms-steiner-puw-324769b/src/elite.h">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/Luftschlange-ms-steiner-puw-324769b/src/execution_log.h">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/Luftschlange-ms-steiner-puw-324769b/src/graph.h">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/Luftschlange-ms-steiner-puw-324769b/src/labels.h">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/Luftschlange-ms-steiner-puw-324769b/src/pairheap.h">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/Luftschlange-ms-steiner-puw-324769b/src/perturbation.h">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/Luftschlange-ms-steiner-puw-324769b/src/preprocess.h">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/Luftschlange-ms-steiner-puw-324769b/src/rfw_random.cpp">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/Luftschlange-ms-steiner-puw-324769b/src/rfw_random.h">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/Luftschlange-ms-steiner-puw-324769b/src/rfw_stack.h">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/Luftschlange-ms-steiner-puw-324769b/src/rfw_timer.cpp">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/Luftschlange-ms-steiner-puw-324769b/src/rfw_timer.h">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/Luftschlange-ms-steiner-puw-324769b/src/simplequeue.h">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/Luftschlange-ms-steiner-puw-324769b/src/solution.h">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/Luftschlange-ms-steiner-puw-324769b/src/spgconfig.h">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/Luftschlange-ms-steiner-puw-324769b/src/spgsolver.h">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/Luftschlange-ms-steiner-puw-324769b/src/stedgelinear.h">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/Luftschlange-ms-steiner-puw-324769b/src/steiner.cpp">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/Luftschlange-ms-steiner-puw-324769b/src/targetver.h">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/Luftschlange-ms-steiner-puw-324769b/src/uf.h">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/Luftschlange-ms-steiner-puw-324769b/src/uset.h">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/Luftschlange-ms-steiner-puw-324769b/src/voronoi.h">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/cdigofonteefpmax/FPmax/bibrand.c">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/cdigofonteefpmax/FPmax/bibrand.h">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/cdigofonteefpmax/FPmax/buffer.cpp">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/cdigofonteefpmax/FPmax/buffer.h">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/cdigofonteefpmax/FPmax/buffer.o">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/cdigofonteefpmax/FPmax/common.h">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/cdigofonteefpmax/FPmax/data.cpp">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/cdigofonteefpmax/FPmax/data.h">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/cdigofonteefpmax/FPmax/data.o">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/cdigofonteefpmax/FPmax/fim_all">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/cdigofonteefpmax/FPmax/fim_closed">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/cdigofonteefpmax/FPmax/fim_maximal">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/cdigofonteefpmax/FPmax/fp_node.cpp">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/cdigofonteefpmax/FPmax/fp_node.h">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/cdigofonteefpmax/FPmax/fp_node.o">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/cdigofonteefpmax/FPmax/fp_tree.cpp">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/cdigofonteefpmax/FPmax/fp_tree.h">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/cdigofonteefpmax/FPmax/fp_tree.o">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/cdigofonteefpmax/FPmax/fpclosed.o">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/cdigofonteefpmax/FPmax/fpgrowth.o">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/cdigofonteefpmax/FPmax/fpmax.cpp">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/cdigofonteefpmax/FPmax/fpmax.o">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/cdigofonteefpmax/FPmax/fpmax_hnmp">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/cdigofonteefpmax/FPmax/fpmax_hnmp.cpp">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/cdigofonteefpmax/FPmax/fpmax_hnmp.o">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/cdigofonteefpmax/FPmax/fsout.cpp">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/cdigofonteefpmax/FPmax/fsout.h">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/cdigofonteefpmax/FPmax/fsout.o">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/cdigofonteefpmax/FPmax/makefile">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/cdigofonteefpmax/Mineracao.cpp">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/cdigofonteefpmax/bd.txt">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/cdigofonteefpmax/padroes.txt">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/constructive_md.cpp">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/constructive_md.h">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/elite_simples.cpp">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/elite_simples.h">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/popstar.cpp">
+			<Option target="Steiner"/>
+		</Unit>
+		<Unit filename="/home/arthur/Projetos GitHub/Steiner/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>
