@@ -6,10 +6,10 @@
 #include "bossa_heap.h"
 #include <stdlib.h>
 #include <string.h>
-// Gabriel - alteração 13/09/2008 - início 
+// Gabriel - alteraï¿½ï¿½o 13/09/2008 - inï¿½cio 
 #include <sstream>
 using namespace std;
-// Gabriel - alteração 13/09/2008 - fim
+// Gabriel - alteraï¿½ï¿½o 13/09/2008 - fim
 void PMConstructiveMD::fatal (const char *func, const char *msg) {
 	fprintf (stderr, "PMConstructiveMD::%s: %s.\n", func, msg);
 	exit(-1);
@@ -92,8 +92,8 @@ void PMConstructiveMD::run (PMSolution *s) {
 	if (method != MIX) {m = method;}
 	else {m = BossaRandom::getInteger(0,MIX-1);}
 
-	// Gabriel - alteração 30/06/2008	- início 
-	// AQUI DEVE SER REALIZADA A MINERAÇÃO
+	// Gabriel - alteraï¿½ï¿½o 30/06/2008	- inï¿½cio 
+	// AQUI DEVE SER REALIZADA A MINERAï¿½ï¿½O
 	if (construcaoInicial == 0)
 	{
 		ostringstream buffer("");		
@@ -105,14 +105,14 @@ void PMConstructiveMD::run (PMSolution *s) {
 		int id_arq_tmp = i;
 		BossaTimer mine(false); //Isabel - 10/09/27
 		arq_padroes << "padroes-" << s->getM() << "-" << time (NULL) << ".txt";
-		buffer << "./fpmax_hnmp "  // minerador de padroes frequentes
+		buffer << "./bin/fpmax_hnmp "  // minerador de padroes frequentes
 			   << seed << " "                                          // seed
 			   << id_arq_tmp                                           // id de arq temporario
 			   << " elite.txt "  									   // base a ser minerada
 			   << tam_elite_simples << " "                             // tamanho da base
 			   << i << " "                                             // suporte minimo
 			   << npadroes << " "                                      // quantidade de padroes a minerar
-			   << arq_padroes.str().c_str(); // arquivo onde serão armazenados os padroes
+			   << arq_padroes.str().c_str(); // arquivo onde serï¿½o armazenados os padroes
 		mine.resume();
 		system(buffer.str().c_str());
 		mine.pause(); 					
@@ -146,13 +146,13 @@ void PMConstructiveMD::run (PMSolution *s) {
 	}
 	else
 	{
-	// Caso hajam menos de 16 padroes, faça um uso circular dos mesmos
+	// Caso hajam menos de 16 padroes, faï¿½a um uso circular dos mesmos
 		ti_padroes_iter++;
 		if (ti_padroes_iter == ti_padroes.end())
 			ti_padroes_iter = ti_padroes.begin();
 	}
 
-	// Gabriel - alteração 30/06/2008	- fim
+	// Gabriel - alteraï¿½ï¿½o 30/06/2008	- fim
 	double v = param[m];
 	switch (m) {
 		case MST     : mst      (s, false); break;
@@ -751,8 +751,8 @@ void PMConstructiveMD::sample (PMSolution *s, double fraction, bool stats) {
 	// Running time: O(p m fraction n)
 	//---------------------------------
 	s->reset(); //start with an empty solution
-	// Gabriel - alteração 22/07/2008	- início 
-	// AQUI DEVE SER !APLICADA! A MINERAÇÃO!!!!
+	// Gabriel - alteraï¿½ï¿½o 22/07/2008	- inï¿½cio 
+	// AQUI DEVE SER !APLICADA! A MINERAï¿½ï¿½O!!!!
 	std::set<int> wa_padroes = *ti_padroes_iter;
 	set<int>::iterator wa_padroes_iter; 
 	for (wa_padroes_iter = wa_padroes.begin(); wa_padroes_iter != wa_padroes.end(); wa_padroes_iter++)
@@ -760,7 +760,7 @@ void PMConstructiveMD::sample (PMSolution *s, double fraction, bool stats) {
 		s->add(*wa_padroes_iter,true);
 	}
 	//s->add(fac, true);
-	// Gabriel - alteração 22/07/2008	- fim
+	// Gabriel - alteraï¿½ï¿½o 22/07/2008	- fim
 	int count = 0;
 	while (s->getP() < p) {
 		count++;
@@ -803,8 +803,8 @@ void PMConstructiveMD::sample (PMSolution *s, double fraction, bool stats) {
 		fprintf (stdout, "samplef %.3f\n", fraction);
 		fprintf (stdout, "sampletime %.3f\n", t.getTime());
 	}
-// Gabriel - alteração 07/09/2008 - início - contando tempo de construcao
+// Gabriel - alteraï¿½ï¿½o 07/09/2008 - inï¿½cio - contando tempo de construcao
 //	fprintf (stdout, "sampletime %.3f\n", t.getTime());
-// Gabriel - alteração 07/09/2008 - fim
+// Gabriel - alteraï¿½ï¿½o 07/09/2008 - fim
 	if (verbose>0) fprintf (stderr, "(%.2f)", t.getTime());
 }

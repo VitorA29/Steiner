@@ -1,6 +1,6 @@
 flags = -Wall -O3
 
-all:: fim_all fim_closed fim_maximal fpmax_hnmp
+all:: clean fim_all fim_closed fim_maximal fpmax_hnmp
 
 fpmax_hnmp: fim_maximal fpmax_hnmp.o 
 	g++ $(flags) fpmax_hnmp.o -o fpmax_hnmp
@@ -42,4 +42,4 @@ fp_node.o: fp_node.cpp fp_node.h fsout.h common.h
 	g++ $(flags) -c fp_node.cpp
 
 clean:
-	rm fim_all fim_closed fim_maximal fpmax_hnmp fim_all.o fim_closed.o fim_maximal.o fpmax_hnmp.o
+	rm -f fim_all fim_closed fim_maximal fpmax_hnmp fim_all.o fim_closed.o fim_maximal.o fpmax_hnmp.o

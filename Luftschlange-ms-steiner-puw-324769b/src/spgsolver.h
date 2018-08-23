@@ -2090,7 +2090,7 @@ public:
 		ostringstream buffer;
 		buffer.str("");
 //      fpmax_hnmp <semente> <id_arq_tmp> <banco de dados> <tam. do banco> <suporte minimo> <qtd de padroes> <arq. saida>
-		buffer << "./fpmax_hnmp " << "1 " << random()%100 << " EliteVertices.txt " << msit << " " << 2 << " " << 10 << " padroesV.txt" ;
+		buffer << "./bin/fpmax_hnmp " << "1 " << random()%100 << " EliteVertices.txt " << msit << " " << 5 << " " << 10 << " padroesV.txt" ;
 		printf(buffer.str().c_str());
 		printf("\n");
 		int v = system(buffer.str().c_str());

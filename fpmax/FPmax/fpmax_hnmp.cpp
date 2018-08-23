@@ -326,14 +326,14 @@ int main(int argc, char **argv)
     
     int tam_banco = atoi(argv[4]);
     
-    // Quantidade de padrões a serem considerados	
+    // Quantidade de padrï¿½es a serem considerados	
     nlargest_patterns = atoi(argv[6]);
 
     if ((fpout = fopen(argv[7], "w")) == NULL) {
-		// Gabriel - alteração 07/09/2008 - início 
+		// Gabriel - alteraï¿½ï¿½o 07/09/2008 - inï¿½cio 
 		//printf("could not open %s\n",argv[7]);
         fprintf(stderr,"could not open %s\n",argv[7]);
-		// Gabriel - alteração 07/09/2008 - fim
+		// Gabriel - alteraï¿½ï¿½o 07/09/2008 - fim
         exit(1);
     }
 
@@ -361,15 +361,15 @@ int main(int argc, char **argv)
  
     ostringstream buffer;
     for(int s = min_sup; s <= tam_banco; s++) {	
-// Gabriel - alteração 30/06/2008	- início 	
+// Gabriel - alteraï¿½ï¿½o 30/06/2008	- inï¿½cio 	
         buffer.str("");		
 //		buffer << "c:\\ProjetoFinal\\popstar2002\\debug\\fim_maximal " << argv[3] << " " << s << " " << ARQ_TMP << argv[2] << ".txt";
-		buffer << "./fim_maximal " << argv[3] << " " << s << " " << ARQ_TMP << argv[2] << ".txt";
+		buffer << "./bin/fim_maximal " << argv[3] << " " << s << " " << ARQ_TMP << argv[2] << ".txt";
 		system(buffer.str().c_str());
 		
 		buffer.str("");
         buffer << ARQ_TMP << argv[2] << ".txt";	
-// Gabriel - alteração 30/06/2008	- fim 
+// Gabriel - alteraï¿½ï¿½o 30/06/2008	- fim 
         if ((fpin = fopen(buffer.str().c_str(), "r")) == NULL) {
             fprintf(stderr,"could not open %s\n", buffer.str().c_str());
             exit(1);
@@ -390,15 +390,15 @@ int main(int argc, char **argv)
             for (i = 0; i < size; i++)
             {
                 fscanf(fpin,"%d ",&simple_pattern[i]);
-				// Gabriel - alteração 07/09/2008 - início
+				// Gabriel - alteraï¿½ï¿½o 07/09/2008 - inï¿½cio
                 //printf("%d ",simple_pattern[i]);          
 				//fprintf(stderr, "%d ",simple_pattern[i]);          
-				// Gabriel - alteração 07/09/2008 - fim
+				// Gabriel - alteraï¿½ï¿½o 07/09/2008 - fim
             }
-			// Gabriel - alteração 07/09/2008 - início
+			// Gabriel - alteraï¿½ï¿½o 07/09/2008 - inï¿½cio
             //printf("\n");
 			//fprintf(stderr, "\n");
-			// Gabriel - alteração 07/09/2008 - fim
+			// Gabriel - alteraï¿½ï¿½o 07/09/2008 - fim
             choose_largest(size, simple_pattern, supp, seed);                        
             free(simple_pattern);
         }
@@ -409,25 +409,25 @@ int main(int argc, char **argv)
     previous_pattern = head->first;
     do {
         current_pattern = previous_pattern->next;
-// Gabriel - alteração 07/09/2008 - início 
+// Gabriel - alteraï¿½ï¿½o 07/09/2008 - inï¿½cio 
 		//printf("pu\t%d\t",previous_pattern->support);
         //fprintf(stderr, "pu\t%d\t",previous_pattern->support);
-// Gabriel - alteração 07/09/2008 - fim
+// Gabriel - alteraï¿½ï¿½o 07/09/2008 - fim
 	fprintf(fpout,"%d;",previous_pattern->size);
 	fprintf(fpout,"%d;",previous_pattern->support);
         for (i = 0; i < previous_pattern->size; i++)
         {
-			// Gabriel - alteração 07/09/2008 - início 
+			// Gabriel - alteraï¿½ï¿½o 07/09/2008 - inï¿½cio 
             //printf("%d ",previous_pattern->pattern[i]);
 			//fprintf(stderr, "%d ",previous_pattern->pattern[i]);
-			// Gabriel - alteração 07/09/2008 - fim
+			// Gabriel - alteraï¿½ï¿½o 07/09/2008 - fim
                        fprintf(fpout,"%d ",previous_pattern->pattern[i]);
         }
         fseek(fpout, -1, 1);
-		// Gabriel - alteração 07/09/2008 - início
+		// Gabriel - alteraï¿½ï¿½o 07/09/2008 - inï¿½cio
 		//printf("\n");
 	//fprintf(stderr, "\n");     
-		// Gabriel - alteração 07/09/2008 - fim
+		// Gabriel - alteraï¿½ï¿½o 07/09/2008 - fim
         fprintf(fpout,"\n");
         free(previous_pattern);
         previous_pattern = current_pattern;

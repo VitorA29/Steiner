@@ -364,7 +364,7 @@ int main(int argc, char **argv)
 // Gabriel - alteração 30/06/2008	- início 	
         buffer.str("");		
 //		buffer << "c:\\ProjetoFinal\\popstar2002\\debug\\fim_maximal " << argv[3] << " " << s << " " << ARQ_TMP << argv[2] << ".txt";
-		buffer << "./fim_maximal " << argv[3] << " " << s << " " << ARQ_TMP << argv[2] << ".txt";
+		buffer << "./bin/fim_maximal " << argv[3] << " " << s << " " << ARQ_TMP << argv[2] << ".txt";
 		system(buffer.str().c_str());
 		
 		buffer.str("");
@@ -380,7 +380,7 @@ int main(int argc, char **argv)
             fscanf(fpin,"%d;",&size);
             if(size == -1) break;
             fscanf(fpin,"%d;",&supp);
-
+            printf("Size: %d\n", size);
             //fprintf(stderr, "p\t%d\t",supp);
             if (!(simple_pattern = (int *) malloc(size*sizeof(int))))
             {
@@ -405,7 +405,7 @@ int main(int argc, char **argv)
         fclose(fpin);
     }
 	
-    // printf("\nPatterns found:\n");
+    printf("\nPatterns found:\n");
     previous_pattern = head->first;
     do {
         current_pattern = previous_pattern->next;
