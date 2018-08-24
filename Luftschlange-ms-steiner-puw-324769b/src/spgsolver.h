@@ -187,7 +187,7 @@ public:
 
 	typedef enum { MS_PLAIN, MS_COMBINATION, MS_BINARY, MS_MULTILEVEL, MS_TIMEBOUNDEDCOMBINATION, MS_TIMEBOUNDEDMULTILEVEL, MS_TIMEBOUNDEDADAPTIVE, MS_NUMBER } MSType;
 	static void ShowUsage () {
-		fprintf (stderr, "Usage: steiner <stp_file> [-bb] [-ub] [-prep] [-msit] [-seed] [-mstype] [-elite]\n");
+		fprintf (stderr, "Usage: steiner <stp_file> [-bb] [-ub] [-prep] [-msit] [-seed] [-mstype] [-elite] [-mine] [-pattern]\n");
 		fprintf (stderr, "Valid types: plain(%d) combination(%d) binary(%d) multilevel(%d)\n", MS_PLAIN, MS_COMBINATION, MS_BINARY, MS_MULTILEVEL);
 		exit (-1);
 	}
@@ -303,6 +303,9 @@ public:
 		int msit = 0;
 		bool USEMEMORY = false;
 		int elite_cap = 0;
+		bool DATAMINING = false;
+		int min_sup = 0;
+		int qtd_pattern = 10;
 
 		int seed = 17;
 		EdgeCost primal = INFINITE_COST;
@@ -379,6 +382,18 @@ public:
 				continue;
 			}
 
+			if (strcmp(argv[i], "-mine")==0) {
+				min_sup = atoi(argv[i+1]);
+				fprintf (stderr, "Doing mining with minimum support set to %d.\n", min_sup);
+				continue;
+			}
+
+			if (strcmp(argv[i], "-pattern")==0) {
+				qtd_pattern = atoi(argv[i+1]);
+				fprintf (stderr, "Changing number of patterns to %d.\n", qtd_pattern);
+				continue;
+			}
+
 			//maybe config knows what to do with this parameter
 			config->ReadParameter (argv[i], argv[i+1]);
 		}
@@ -404,6 +419,8 @@ public:
 		MULTISTART = (msit != 0);
 
 		USEMEMORY = (elite_cap != 0);
+
+		DATAMINING = (min_sup != 0);
 
 		RFWRandom::randomize(seed);
 
@@ -539,7 +556,10 @@ public:
 		if (BRANCHBOUND) {
 			BranchBound::RunBranchAndBound(g, seed, primal, bestfound, bestknown, config, NULL, &executionLog);
 		}
-        CallFPMax(msit);
+
+        if(DATAMINING){
+			CallFPMax(elite_cap, min_sup, qtd_pattern);
+		}
 
         double walltime = timer.getTime();
 		fprintf (stdout, "totalwalltimeseconds %.12f\n", walltime);
@@ -2085,15 +2105,24 @@ public:
 		return nscanned;
 	}
 
-	static void CallFPMax(int msit){
+	static void CallFPMax(int elite_cap, int min_sup, int qtd_pattern){
 	    printf("Calling FPMax\n");
 		ostringstream buffer;
 		buffer.str("");
 //      fpmax_hnmp <semente> <id_arq_tmp> <banco de dados> <tam. do banco> <suporte minimo> <qtd de padroes> <arq. saida>
-		buffer << "./bin/fpmax_hnmp " << "1 " << random()%100 << " EliteVertices.txt " << msit << " " << 5 << " " << 10 << " padroesV.txt" ;
+		FILE *fp = fopen("output/padroesVertices.txt", "w");
+		fclose(fp);
+		buffer << "./bin/fpmax_hnmp " << "1 " << random()%100 << " output/EliteVertices.txt " << elite_cap << " " << min_sup << " " << qtd_pattern << " output/padroesVertices.txt";
 		printf(buffer.str().c_str());
 		printf("\n");
 		int v = system(buffer.str().c_str());
+		fp = fopen("output/padroesArestas.txt", "w");
+		fclose(fp);
+		buffer.str("");
+		buffer << "./bin/fpmax_hnmp " << "1 " << random()%100 << " output/EliteArestas.txt " << elite_cap << " " << min_sup << " " << qtd_pattern << " output/padroesArestas.txt";
+		printf(buffer.str().c_str());
+		printf("\n");
+		v = system(buffer.str().c_str());
 
 //        buffer << "./fpmax_hnmp " << "1 " << random()%100 << " EliteArestas.txt " << msit << " " << 2 << " " << 10 << " padroesA.txt" ;
 //        int a = system(buffer.str().c_str());

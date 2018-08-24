@@ -166,9 +166,9 @@ public:
 	}
 
 	void Output(FILE *file, int columns) {
-		FILE *fp = fopen("Elite.txt", "w");
-		FILE *fd = fopen("EliteArestas.txt", "w");
-		FILE *fv = fopen("EliteVertices.txt", "w");
+		FILE *fp = fopen("output/Elite.txt", "w");
+		FILE *fd = fopen("output/EliteArestas.txt", "w");
+		FILE *fv = fopen("output/EliteVertices.txt", "w");
 		printf("Count: %d\nCapacity:%d\n", count, capacity);
 		for (int i=1; i<=count; i++) {
 			int column = (i-1) % columns;
