@@ -2086,23 +2086,61 @@ public:
 	}
 
 	static void CallFPMax(int msit){
-	    printf("Calling FPMax\n");
+	    printf("Calling FPMax for vertices\n");
 		ostringstream buffer;
 		buffer.str("");
 //      fpmax_hnmp <semente> <id_arq_tmp> <banco de dados> <tam. do banco> <suporte minimo> <qtd de padroes> <arq. saida>
-		buffer << "./bin/fpmax_hnmp " << "1 " << random()%100 << " EliteVertices.txt " << msit << " " << 5 << " " << 10 << " padroesV.txt" ;
-		printf(buffer.str().c_str());
-		printf("\n");
-		int v = system(buffer.str().c_str());
+		buffer << "./bin/fpmax_hnmp " << "1 " << random()%100 << " EliteVertices.txt " << msit << " " << 5 << " " << 10 << " padroesV5.txt" ;
+		printf("support: 5\n");
+		system(buffer.str().c_str());
+        buffer.str("");
+        buffer << "./bin/fpmax_hnmp " << "1 " << random()%100 << " EliteVertices.txt " << msit << " " << 6 << " " << 10 << " padroesV6.txt" ;
+        printf("support: 6\n");
+        system(buffer.str().c_str());
+        buffer.str("");
+        buffer << "./bin/fpmax_hnmp " << "1 " << random()%100 << " EliteVertices.txt " << msit << " " << 7 << " " << 10 << " padroesV7.txt" ;
+        printf("support: 7\n");
+        system(buffer.str().c_str());
+        buffer.str("");
+        buffer << "./bin/fpmax_hnmp " << "1 " << random()%100 << " EliteVertices.txt " << msit << " " << 8 << " " << 10 << " padroesV8.txt" ;
+        printf("support: 8\n");
+        system(buffer.str().c_str());
+        buffer.str("");
+        buffer << "./bin/fpmax_hnmp " << "1 " << random()%100 << " EliteVertices.txt " << msit << " " << 9 << " " << 10 << " padroesV9.txt" ;
+        printf("support: 9\n");
+        system(buffer.str().c_str());
+        buffer.str("");
+        buffer << "./bin/fpmax_hnmp " << "1 " << random()%100 << " EliteVertices.txt " << msit << " " << 10 << " " << 10 << " padroesV10.txt" ;
+        printf("support: 10\n");
+        system(buffer.str().c_str());
 
-//        buffer << "./fpmax_hnmp " << "1 " << random()%100 << " EliteArestas.txt " << msit << " " << 2 << " " << 10 << " padroesA.txt" ;
-//        int a = system(buffer.str().c_str());
-//        printf(buffer.str().c_str());
-//        printf("\n");
+		printf("Calling FPMax for edges\n");
 
         buffer.str("");
-		//printf("Vertices: %d\nArestas: %d\n", v, a);
-	}
+        buffer << "./bin/fpmax_hnmp " << "1 " << random()%100 << " EliteArestas.txt " << msit << " " << 5 << " " << 10 << " padroesA5.txt" ;
+        printf("support: 5\n");
+        system(buffer.str().c_str());
+        buffer.str("");
+        buffer << "./bin/fpmax_hnmp " << "1 " << random()%100 << " EliteArestas.txt " << msit << " " << 6 << " " << 10 << " padroesA6.txt" ;
+        printf("support: 6\n");
+        system(buffer.str().c_str());
+        buffer.str("");
+        buffer << "./bin/fpmax_hnmp " << "1 " << random()%100 << " EliteArestas.txt " << msit << " " << 7 << " " << 10 << " padroesA7.txt" ;
+        printf("support: 7\n");
+        system(buffer.str().c_str());
+        buffer.str("");
+        buffer << "./bin/fpmax_hnmp " << "1 " << random()%100 << " EliteArestas.txt " << msit << " " << 8 << " " << 10 << " padroesA8.txt" ;
+        printf("support: 8\n");
+        system(buffer.str().c_str());
+        buffer.str("");
+        buffer << "./bin/fpmax_hnmp " << "1 " << random()%100 << " EliteArestas.txt " << msit << " " << 9 << " " << 10 << " padroesA9.txt" ;
+        printf("support: 9\n");
+        system(buffer.str().c_str());
+        buffer.str("");
+        buffer << "./bin/fpmax_hnmp " << "1 " << random()%100 << " EliteArestas.txt " << msit << " " << 10 << " " << 10 << " padroesA10.txt" ;
+        printf("support: 10\n");
+        system(buffer.str().c_str());
+    }
 
 };
 
