@@ -307,6 +307,8 @@ public:
 		int min_sup = 0;
 		int qtd_pattern = 10;
 
+		time_t time_now = time(0);
+
 		int seed = 17;
 		EdgeCost primal = INFINITE_COST;
 
@@ -517,7 +519,7 @@ public:
 				RunMultistart(g, mstype, msit, bestfound, bestknown, config, name, NULL, &executionLog, &bestSolution);
 			}
 			else{
-				EliteMultistart(bestSolution, msit, elite_cap, "eliteFile", config);
+				EliteMultistart(bestSolution, msit, elite_cap, "eliteFile", config, time_now);
 			}
 		}
 
@@ -558,7 +560,7 @@ public:
 		}
 
         if(DATAMINING){
-			CallFPMax(elite_cap, min_sup, qtd_pattern);
+			CallFPMax(elite_cap, min_sup, qtd_pattern, time_now);
 		}
 
         double walltime = timer.getTime();
@@ -795,7 +797,7 @@ public:
 
 
 
-	static void EliteMultistart (SteinerSolution &solution, int maxit, int capacity, char *outprefix, SteinerConfig *config) {
+	static void EliteMultistart (SteinerSolution &solution, int maxit, int capacity, char *outprefix, SteinerConfig *config, time_t time_now) {
 		Graph &g = *solution.g;
 
 		SteinerSolution bestsol(&g);
@@ -806,16 +808,20 @@ public:
 
 		SolutionPool elite(capacity);
 
-		for (int i=0; i<maxit; i++) {
-			CombinationMultistart(solution, maxit, capacity, NULL, 0, config);
+		int num_iterations = maxit/17 + (maxit%17==0?0:1);
+
+		for (int i=0; i<num_iterations; i++) {
+			CombinationMultistart(solution, 17, capacity, NULL, 0, config);
 			EdgeCost curcost = solution.GetCost();
 
-			fprintf (stderr, "Should be adding solution %.0f to capacity %d.\n", (double)curcost, capacity);
+			fprintf (stderr, "Should be adding created solution %.0f to capacity %d.\n", (double)curcost, capacity);
 			fflush(stderr);
 			int pos1 = elite.Add(&solution);
 			//int pos1 = -1;
 			CascadedCombination(solution, combsol, elite, -1, random, config);
 			curcost = solution.GetCost();
+
+			fprintf (stderr, "Should be adding combined solution %.0f to capacity %d.\n", (double)curcost, capacity);
 			int pos2 = elite.Add(&solution);
 
 			fprintf (stderr, "[%d,%d:%.0f] ", pos1, pos2, (double)solution.GetCost());
@@ -826,8 +832,8 @@ public:
 			}
 
 			fprintf (stderr, "Iteration %d: %.0f, pool: %d\n", i, (double)bestsol.GetCost(), elite.GetCount());
-			
-			elite.Output(stderr, 8);
+
+			elite.Output(stderr, 8, time_now);
 		}
 
 		solution.CopyFrom(&bestsol);
@@ -1270,7 +1276,7 @@ public:
 			vector<SteinerSolution*> solpointers;
 
 			for (int i = 0; i < SUBCOUNT; i++) {
-				subelite[i]->Output(stderr, 8);
+				subelite[i]->Output(stderr, 8, 0);
 				fprintf(stderr, "\n");
 				int count = subelite[i]->GetCount();
 				for (int j = 1; j <= count; j++) solpointers.push_back(subelite[i]->GetReference(j));
@@ -1302,7 +1308,7 @@ public:
 			elite.Add(sol);
 			}
 			}*/
-			elite.Output(stderr, 8);
+			elite.Output(stderr, 8, 0);
 
 		}
 
@@ -2105,21 +2111,24 @@ public:
 		return nscanned;
 	}
 
-	static void CallFPMax(int elite_cap, int min_sup, int qtd_pattern){
+	static void CallFPMax(int elite_cap, int min_sup, int qtd_pattern, time_t time_now){
 	    printf("Calling FPMax\n");
 		ostringstream buffer;
 		buffer.str("");
 //      fpmax_hnmp <semente> <id_arq_tmp> <banco de dados> <tam. do banco> <suporte minimo> <qtd de padroes> <arq. saida>
-		FILE *fp = fopen("output/padroesVertices.txt", "w");
+		char fname[22+16];
+		sprintf(fname, "output/%d_padroesV.txt", time_now);
+		FILE *fp = fopen(fname, "w");
 		fclose(fp);
-		buffer << "./bin/fpmax_hnmp " << "1 " << random()%100 << " output/EliteVertices.txt " << elite_cap << " " << min_sup << " " << qtd_pattern << " output/padroesVertices.txt";
+		buffer << "./bin/fpmax_hnmp " << "1 " << random()%100 << " output/" << time_now << "_EliteV.txt " << elite_cap << " " << min_sup << " " << qtd_pattern << " " << fname;
 		printf(buffer.str().c_str());
 		printf("\n");
 		int v = system(buffer.str().c_str());
-		fp = fopen("output/padroesArestas.txt", "w");
+		sprintf(fname, "output/%d_padroesA.txt", time_now);
+		fp = fopen(fname, "w");
 		fclose(fp);
 		buffer.str("");
-		buffer << "./bin/fpmax_hnmp " << "1 " << random()%100 << " output/EliteArestas.txt " << elite_cap << " " << min_sup << " " << qtd_pattern << " output/padroesArestas.txt";
+		buffer << "./bin/fpmax_hnmp " << "1 " << random()%100 << " output/" << time_now << "_EliteA.txt " << elite_cap << " " << min_sup << " " << qtd_pattern << " " << fname;
 		printf(buffer.str().c_str());
 		printf("\n");
 		v = system(buffer.str().c_str());

@@ -3,5 +3,8 @@
 Luftschlange-ms-steiner-puw-324769b/bin/
 *.out
 
+#Ignoring Output Files
+Luftschlange-ms-steiner-puw-324769b/output/
+
 #Ignoring VSCode
 .vscode/

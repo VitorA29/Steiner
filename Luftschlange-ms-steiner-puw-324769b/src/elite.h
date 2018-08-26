@@ -165,10 +165,15 @@ public:
 		else return sol[FindBestPosition()]->GetCost();
 	}
 
-	void Output(FILE *file, int columns) {
-		FILE *fp = fopen("output/Elite.txt", "w");
-		FILE *fd = fopen("output/EliteArestas.txt", "w");
-		FILE *fv = fopen("output/EliteVertices.txt", "w");
+	void Output(FILE *file, int columns, time_t time) {
+		char fname[19+16];
+		sprintf(fname,"output/%d_EliteD.txt", time);
+		printf("%s\n", fname);
+		FILE *fp = fopen(fname, "w");
+		sprintf(fname,"output/%d_EliteA.txt", time);
+		FILE *fd = fopen(fname, "w");
+		sprintf(fname,"output/%d_EliteV.txt", time);
+		FILE *fv = fopen(fname, "w");
 		printf("Count: %d\nCapacity:%d\n", count, capacity);
 		for (int i=1; i<=count; i++) {
 			int column = (i-1) % columns;
@@ -200,6 +205,7 @@ public:
         }
 		fprintf (stderr, "\n");
 		fclose(fp);
+		fclose(fd);
 		fclose(fv);
 	}
 
