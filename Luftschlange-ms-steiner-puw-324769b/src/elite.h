@@ -167,12 +167,11 @@ public:
 
 	void Output(FILE *file, int columns, time_t time) {
 		char fname[19+16];
-		sprintf(fname,"output/%d_EliteD.txt", time);
-		printf("%s\n", fname);
+		sprintf(fname,"output/%d/EliteD.txt", time);
 		FILE *fp = fopen(fname, "w");
-		sprintf(fname,"output/%d_EliteA.txt", time);
+		sprintf(fname,"output/%d/EliteA.txt", time);
 		FILE *fd = fopen(fname, "w");
-		sprintf(fname,"output/%d_EliteV.txt", time);
+		sprintf(fname,"output/%d/EliteV.txt", time);
 		FILE *fv = fopen(fname, "w");
 		printf("Count: %d\nCapacity:%d\n", count, capacity);
 		for (int i=1; i<=count; i++) {

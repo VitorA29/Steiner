@@ -1,3 +1,9 @@
-./bin/steiner instances/geo_original/G101.stp -msit 500 -elite 10 -mine 8
+Sempre use "make reset" antes de executar.(ele exclui tudo da pasta output)
 
-./bin/steiner instances/geo_original/G207.stp -msit 170 -elite 10 -mine 8
+./bin/steiner instances/geo_original/G207.stp -msit 50 -elite 10 -mine 8
+
+./bin/steiner instances/geo_original/G102.stp -msit 50 -elite 10 -mine 9
+
+./bin/steiner instances/geo_original/G303.stp -msit 50 -elite 10 -mine 9
+
+./bin/steiner instances/geo_original/G307.stp -msit 50 -elite 10 -mine 9 ERROR: invalid result.

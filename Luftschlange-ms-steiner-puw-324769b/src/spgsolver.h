@@ -309,6 +309,11 @@ public:
 
 		time_t time_now = time(0);
 
+		ostringstream buffer;
+		buffer.str("");
+		buffer << "mkdir output/" << time_now;
+		int v = system(buffer.str().c_str());
+
 		int seed = 17;
 		EdgeCost primal = INFINITE_COST;
 
@@ -559,10 +564,6 @@ public:
 			BranchBound::RunBranchAndBound(g, seed, primal, bestfound, bestknown, config, NULL, &executionLog);
 		}
 
-        if(DATAMINING){
-			CallFPMax(elite_cap, min_sup, qtd_pattern, time_now);
-		}
-
         double walltime = timer.getTime();
 		fprintf (stdout, "totalwalltimeseconds %.12f\n", walltime);
 		//fprintf (stdout, "totaltimeseconds %.12f\n", walltime + second_time);
@@ -570,6 +571,19 @@ public:
 
 		Basics::ReportResults(stdout, "total", walltime + first_time, bestfound, bestknown);
 		Basics::ReportResults(stdout, "totalcpu", walltime + second_time, bestfound, bestknown);
+
+		char fname_time[19+16];
+		sprintf(fname_time, "output/%d/Report.txt", time_now);
+		FILE *f_time = fopen(fname_time, "w");
+		fprintf(f_time, "%s\n", name);
+		fprintf (f_time, "totalwalltimeseconds %.12f\n", walltime);
+		Basics::ReportResults(f_time, "total", walltime + first_time, bestfound, bestknown);
+		Basics::ReportResults(f_time, "totalcpu", walltime + second_time, bestfound, bestknown);
+		fclose(f_time);
+
+		if(DATAMINING){
+			CallFPMax(elite_cap, min_sup, qtd_pattern, time_now);
+		}
 
 		// Dump official output logs.
 		if (!config->LOG_FILENAME.empty()) {
@@ -808,10 +822,12 @@ public:
 
 		SolutionPool elite(capacity);
 
-		int num_iterations = maxit/17 + (maxit%17==0?0:1);
+		int comb_iterations = 5;
+
+		int num_iterations = maxit/comb_iterations + (maxit%comb_iterations==0?0:1);
 
 		for (int i=0; i<num_iterations; i++) {
-			CombinationMultistart(solution, 17, capacity, NULL, 0, config);
+			CombinationMultistart(solution, comb_iterations, capacity, NULL, 0, config);
 			EdgeCost curcost = solution.GetCost();
 
 			fprintf (stderr, "Should be adding created solution %.0f to capacity %d.\n", (double)curcost, capacity);
@@ -2113,25 +2129,40 @@ public:
 
 	static void CallFPMax(int elite_cap, int min_sup, int qtd_pattern, time_t time_now){
 	    printf("Calling FPMax\n");
+		RFWTimer timer(true);
 		ostringstream buffer;
 		buffer.str("");
 //      fpmax_hnmp <semente> <id_arq_tmp> <banco de dados> <tam. do banco> <suporte minimo> <qtd de padroes> <arq. saida>
 		char fname[22+16];
-		sprintf(fname, "output/%d_padroesV.txt", time_now);
+		sprintf(fname, "output/%d/padroesV.txt", time_now);
 		FILE *fp = fopen(fname, "w");
 		fclose(fp);
-		buffer << "./bin/fpmax_hnmp " << "1 " << random()%100 << " output/" << time_now << "_EliteV.txt " << elite_cap << " " << min_sup << " " << qtd_pattern << " " << fname;
+		buffer << "./bin/fpmax_hnmp " << "1 " << random()%100 << " output/" << time_now << "/EliteV.txt " << elite_cap << " " << min_sup << " " << qtd_pattern << " " << fname;
 		printf(buffer.str().c_str());
 		printf("\n");
 		int v = system(buffer.str().c_str());
-		sprintf(fname, "output/%d_padroesA.txt", time_now);
+		double elapsed_time = timer.getTime();//consertar
+		printf("Vertice: %.12f\n", elapsed_time);
+		char fname_time[19+16];
+		sprintf(fname_time, "output/%d/Report.txt", time_now);
+		FILE *f_time = fopen(fname_time, "a");
+		fprintf (f_time, "Vertice: %.12f\n", elapsed_time);
+		fclose(f_time);
+		sprintf(fname, "output/%d/padroesA.txt", time_now);
 		fp = fopen(fname, "w");
 		fclose(fp);
 		buffer.str("");
-		buffer << "./bin/fpmax_hnmp " << "1 " << random()%100 << " output/" << time_now << "_EliteA.txt " << elite_cap << " " << min_sup << " " << qtd_pattern << " " << fname;
+		timer.reset();
+		timer.start();
+		buffer << "./bin/fpmax_hnmp " << "1 " << random()%100 << " output/" << time_now << "/EliteA.txt " << elite_cap << " " << min_sup << " " << qtd_pattern << " " << fname;
 		printf(buffer.str().c_str());
 		printf("\n");
 		v = system(buffer.str().c_str());
+		elapsed_time = timer.getTime();
+		printf("Aresta: %.12f\n", elapsed_time);
+		f_time = fopen(fname_time, "a");
+		fprintf (f_time, "Aresta: %.12f", elapsed_time);
+		fclose(f_time);
 
 //        buffer << "./fpmax_hnmp " << "1 " << random()%100 << " EliteArestas.txt " << msit << " " << 2 << " " << 10 << " padroesA.txt" ;
 //        int a = system(buffer.str().c_str());

@@ -2,12 +2,19 @@ CXX = g++
 CXXFLAGS = -std=c++11 -O3 -fopenmp -DNDEBUG -w
 LDFLAGS =
 BIN = ./bin
-FPMAXFOlDER = ./FPmax
+OUT = ./output
+FPMAXDIR = ./FPmax
 SRC = ./src
 
 .PHONY: steiner
 
-all: steiner fpmax
+all: steiner
+
+build: folder fpmax steiner
+
+folder:
+	if [ ! -d $(BIN) ]; then mkdir $(BIN); fi
+	if [ ! -d $(OUT) ]; then mkdir $(OUT); fi
 
 rfw_timer:
 	$(CXX) $(CXXFLAGS) -o $(BIN)/rfw_timer.o -c $(SRC)/rfw_timer.cpp
@@ -15,7 +22,7 @@ rfw_timer:
 rfw_random:
 	$(CXX) $(CXXFLAGS) -o $(BIN)/rfw_random.o -c $(SRC)/rfw_random.cpp
 
-steiner: rfw_timer rfw_random fpmax
+steiner: rfw_timer rfw_random
 	$(CXX) $(CXXFLAGS) -o $(BIN)/steiner.o -c $(SRC)/steiner.cpp
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $(BIN)/steiner $(BIN)/steiner.o $(BIN)/rfw_random.o $(BIN)/rfw_timer.o
 	rm $(BIN)/rfw_random.o $(BIN)/rfw_timer.o $(BIN)/steiner.o
@@ -32,15 +39,24 @@ fpmax: compile_fpmax
 	rm $(BIN)/fpmax_hnmp.o $(BIN)/fpgrowth.o $(BIN)/data.o $(BIN)/fp_tree.o $(BIN)/buffer.o $(BIN)/fsout.o $(BIN)/fp_node.o $(BIN)/fpclosed.o $(BIN)/fpmax.o
 
 compile_fpmax:
-	$(CXX) $(CXXFLAGS) -o $(BIN)/fpmax_hnmp.o -c $(FPMAXFOlDER)/fpmax_hnmp.cpp
-	$(CXX) $(CXXFLAGS) -o $(BIN)/fpgrowth.o -DFI -c $(FPMAXFOlDER)/fpmax.cpp
-	$(CXX) $(CXXFLAGS) -o $(BIN)/data.o -c $(FPMAXFOlDER)/data.cpp
-	$(CXX) $(CXXFLAGS) -o $(BIN)/fp_tree.o -c $(FPMAXFOlDER)/fp_tree.cpp
-	$(CXX) $(CXXFLAGS) -o $(BIN)/buffer.o -c $(FPMAXFOlDER)/buffer.cpp
-	$(CXX) $(CXXFLAGS) -o $(BIN)/fsout.o -c $(FPMAXFOlDER)/fsout.cpp
-	$(CXX) $(CXXFLAGS) -o $(BIN)/fp_node.o -c $(FPMAXFOlDER)/fp_node.cpp
-	$(CXX) $(CXXFLAGS) -o $(BIN)/fpclosed.o -DCFI -c $(FPMAXFOlDER)/fpmax.cpp
-	$(CXX) $(CXXFLAGS) -o $(BIN)/fpmax.o -DMFI -c $(FPMAXFOlDER)/fpmax.cpp
+	$(CXX) $(CXXFLAGS) -o $(BIN)/fpmax_hnmp.o -c $(FPMAXDIR)/fpmax_hnmp.cpp
+	$(CXX) $(CXXFLAGS) -o $(BIN)/fpgrowth.o -DFI -c $(FPMAXDIR)/fpmax.cpp
+	$(CXX) $(CXXFLAGS) -o $(BIN)/data.o -c $(FPMAXDIR)/data.cpp
+	$(CXX) $(CXXFLAGS) -o $(BIN)/fp_tree.o -c $(FPMAXDIR)/fp_tree.cpp
+	$(CXX) $(CXXFLAGS) -o $(BIN)/buffer.o -c $(FPMAXDIR)/buffer.cpp
+	$(CXX) $(CXXFLAGS) -o $(BIN)/fsout.o -c $(FPMAXDIR)/fsout.cpp
+	$(CXX) $(CXXFLAGS) -o $(BIN)/fp_node.o -c $(FPMAXDIR)/fp_node.cpp
+	$(CXX) $(CXXFLAGS) -o $(BIN)/fpclosed.o -DCFI -c $(FPMAXDIR)/fpmax.cpp
+	$(CXX) $(CXXFLAGS) -o $(BIN)/fpmax.o -DMFI -c $(FPMAXDIR)/fpmax.cpp
 
-clean:
+clean_output:
+	rm -r $(OUT)/*
+
+clean: clean_output
 	rm -f $(BIN)/*
+
+trash_all:
+	rm -r $(BIN)
+	rm -r $(OUT)
+
+reset: trash_all build
