@@ -6,5 +6,7 @@ Luftschlange-ms-steiner-puw-324769b/bin/
 #Ignoring Output Files
 Luftschlange-ms-steiner-puw-324769b/output/
 
-#Ignoring VSCode
+#Ignoring IDE Files
 .vscode/
+./cmake-build-debug
+CMakeLists.txt

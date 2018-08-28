@@ -1,3 +1,0 @@
-/home/arthur/Projetos GitHub/Steiner/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/arthur/Projetos GitHub/Steiner/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/arthur/Projetos GitHub/Steiner/cmake-build-debug/CMakeFiles/Steiner.dir
