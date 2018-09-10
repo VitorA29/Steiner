@@ -50,7 +50,7 @@ THE POSSIBILITY OF SUCH DAMAGE.
 #include "buffer.h"
 
 #define LINT sizeof(int)
-// Gabriel - 27/09/2008 - início
+// Gabriel - 27/09/2008 - inï¿½cio
 #define MFI
 // Gabriel - 27/09/2008 - fim
 
@@ -88,6 +88,8 @@ void printLen()
 
 int main(int argc, char **argv)
 {
+	clock_t start_time_aux_temp = clock();
+
 	if (argc < 3)
 	{
 	  cout << "usage: fmi <infile> <MINSUP> [<outfile>]\n";
@@ -238,6 +240,14 @@ int main(int argc, char **argv)
 	delete list;
 	delete []current_fi;
 	delete []supp;
+
+	clock_t end_time_aux_temp = clock();
+	FILE *fp_aux_temp_clock = fopen("auxTempClock.bin", "ab");
+	clock_t elapsed_time_aux_temp = end_time_aux_temp - start_time_aux_temp;
+	// printf("fpmax\n");
+	// printf("elapsed:%d;end:%d;start:%d\n", elapsed_time_aux_temp, end_time_aux_temp, start_time_aux_temp);
+	fwrite(&elapsed_time_aux_temp, sizeof(clock_t), 1, fp_aux_temp_clock);
+	fclose(fp_aux_temp_clock);
 
 	return 0;
 }

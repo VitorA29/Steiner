@@ -2129,7 +2129,6 @@ public:
 
 	static void CallFPMax(int elite_cap, int min_sup, int qtd_pattern, time_t time_now){
 	    printf("Calling FPMax\n");
-		RFWTimer timer(true);
 		ostringstream buffer;
 		buffer.str("");
 //      fpmax_hnmp <semente> <id_arq_tmp> <banco de dados> <tam. do banco> <suporte minimo> <qtd de padroes> <arq. saida>
@@ -2140,29 +2139,42 @@ public:
 		buffer << "./bin/fpmax_hnmp " << "1 " << random()%100 << " output/" << time_now << "/EliteV.txt " << elite_cap << " " << min_sup << " " << qtd_pattern << " " << fname;
 		printf(buffer.str().c_str());
 		printf("\n");
+		FILE *fp_aux_temp_clock = fopen("auxTempClock.bin", "wb");
+		fclose(fp_aux_temp_clock);
 		int v = system(buffer.str().c_str());
-		double elapsed_time = timer.getTime();//consertar
-		printf("Vertice: %.12f\n", elapsed_time);
-		char fname_time[19+16];
-		sprintf(fname_time, "output/%d/Report.txt", time_now);
-		FILE *f_time = fopen(fname_time, "a");
-		fprintf (f_time, "Vertice: %.12f\n", elapsed_time);
-		fclose(f_time);
+		fp_aux_temp_clock = fopen("auxTempClock.bin", "rb");
+		clock_t *elapsed_time = new clock_t[2];
+		elapsed_time[0]=0;
+		elapsed_time[1]=0;
+		fread(elapsed_time, sizeof(clock_t), 2, fp_aux_temp_clock);
+		// printf("1:%d;0:%d\n", elapsed_time[1], elapsed_time[0]);
+		clock_t spend_time = elapsed_time[1] + elapsed_time[0];
+		printf("Clock: %d:%.12fs\n", spend_time, ((double)spend_time/CLOCKS_PER_SEC));
+		fclose(fp_aux_temp_clock);
+		buffer.str("");
+		buffer.str("rm auxTempClock.bin");
+		fp_aux_temp_clock = fopen("auxTempClock.bin", "wb");
+		fclose(fp_aux_temp_clock);
+		v = system(buffer.str().c_str());
 		sprintf(fname, "output/%d/padroesA.txt", time_now);
 		fp = fopen(fname, "w");
 		fclose(fp);
 		buffer.str("");
-		timer.reset();
-		timer.start();
 		buffer << "./bin/fpmax_hnmp " << "1 " << random()%100 << " output/" << time_now << "/EliteA.txt " << elite_cap << " " << min_sup << " " << qtd_pattern << " " << fname;
 		printf(buffer.str().c_str());
 		printf("\n");
 		v = system(buffer.str().c_str());
-		elapsed_time = timer.getTime();
-		printf("Aresta: %.12f\n", elapsed_time);
-		f_time = fopen(fname_time, "a");
-		fprintf (f_time, "Aresta: %.12f", elapsed_time);
-		fclose(f_time);
+		fp_aux_temp_clock = fopen("auxTempClock.bin", "rb");
+		elapsed_time[0]=0;
+		elapsed_time[1]=0;
+		fread(elapsed_time, sizeof(clock_t), 2, fp_aux_temp_clock);
+		// printf("1:%d;0:%d\n", elapsed_time[1], elapsed_time[0]);
+		spend_time = elapsed_time[1] + elapsed_time[0];
+		printf("Clock: %d:%.12fs\n", spend_time, ((double)spend_time/CLOCKS_PER_SEC));
+		fclose(fp_aux_temp_clock);
+		buffer.str("");
+		buffer.str("rm auxTempClock.bin");
+		v = system(buffer.str().c_str());
 
 //        buffer << "./fpmax_hnmp " << "1 " << random()%100 << " EliteArestas.txt " << msit << " " << 2 << " " << 10 << " padroesA.txt" ;
 //        int a = system(buffer.str().c_str());

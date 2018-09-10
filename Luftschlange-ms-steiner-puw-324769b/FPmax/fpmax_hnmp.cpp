@@ -309,6 +309,8 @@ void choose_largest(int size_candidate, int *candidate, int support_candidate, i
 
 int main(int argc, char **argv)
 {
+	clock_t start_time_aux_temp = clock();
+
     FILE *fpin, *fpout;
 // char *line = NULL;
     int size,supp,i;
@@ -435,5 +437,13 @@ int main(int argc, char **argv)
     fclose(fpout);
     remove(buffer.str().c_str());
 	
+	clock_t end_time_aux_temp = clock();
+	FILE *fp_aux_temp_clock = fopen("auxTempClock.bin", "ab");
+	clock_t elapsed_time_aux_temp = end_time_aux_temp - start_time_aux_temp;
+	// printf("fpmax_hnmp\n");
+	// printf("elapsed:%d;end:%d;start:%d\n", elapsed_time_aux_temp, end_time_aux_temp, start_time_aux_temp);
+	fwrite(&elapsed_time_aux_temp, sizeof(clock_t), 1, fp_aux_temp_clock);
+	fclose(fp_aux_temp_clock);
+
     return 0;
 }
