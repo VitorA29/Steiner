@@ -309,11 +309,6 @@ public:
 
 		time_t time_now = time(0);
 
-		ostringstream buffer;
-		buffer.str("");
-		buffer << "mkdir output/" << time_now;
-		int v = system(buffer.str().c_str());
-
 		int seed = 17;
 		EdgeCost primal = INFINITE_COST;
 
@@ -404,6 +399,14 @@ public:
 			//maybe config knows what to do with this parameter
 			config->ReadParameter (argv[i], argv[i+1]);
 		}
+
+		char output_folder[2+sizeof(time_t)+strlen(name)+sizeof(int)+1];
+		sprintf(output_folder,"%d_%s_%d", time_now, name, seed);
+
+		ostringstream buffer;
+		buffer.str("");
+		buffer << "mkdir output/" << output_folder;
+		int v = system(buffer.str().c_str());
 
 		fflush (stderr);
 
@@ -524,7 +527,7 @@ public:
 				RunMultistart(g, mstype, msit, bestfound, bestknown, config, name, NULL, &executionLog, &bestSolution);
 			}
 			else{
-				EliteMultistart(bestSolution, msit, elite_cap, "eliteFile", config, time_now);
+				EliteMultistart(bestSolution, msit, elite_cap, "eliteFile", config, output_folder);
 			}
 		}
 
@@ -572,17 +575,17 @@ public:
 		Basics::ReportResults(stdout, "total", walltime + first_time, bestfound, bestknown);
 		Basics::ReportResults(stdout, "totalcpu", walltime + second_time, bestfound, bestknown);
 
-		char fname_time[19+16];
-		sprintf(fname_time, "output/%d/Report.txt", time_now);
-		FILE *f_time = fopen(fname_time, "w");
-		fprintf(f_time, "%s\n", name);
-		fprintf (f_time, "totalwalltimeseconds %.12f\n", walltime);
-		Basics::ReportResults(f_time, "total", walltime + first_time, bestfound, bestknown);
-		Basics::ReportResults(f_time, "totalcpu", walltime + second_time, bestfound, bestknown);
-		fclose(f_time);
+		char fname_report[6+2+10+strlen(output_folder)+1];
+		sprintf(fname_report, "output/%s/Report.txt", output_folder);
+		FILE *f_report = fopen(fname_report, "w");
+		fprintf(f_report, "%s\n", name);
+		fprintf (f_report, "totalwalltimeseconds %.12f\n", walltime);
+		Basics::ReportResults(f_report, "total", walltime + first_time, bestfound, bestknown);
+		Basics::ReportResults(f_report, "totalcpu", walltime + second_time, bestfound, bestknown);
+		fclose(f_report);
 
 		if(DATAMINING){
-			CallFPMax(elite_cap, min_sup, qtd_pattern, time_now);
+			CallFPMax(elite_cap, min_sup, qtd_pattern, output_folder, fname_report);
 		}
 
 		// Dump official output logs.
@@ -811,7 +814,7 @@ public:
 
 
 
-	static void EliteMultistart (SteinerSolution &solution, int maxit, int capacity, char *outprefix, SteinerConfig *config, time_t time_now) {
+	static void EliteMultistart (SteinerSolution &solution, int maxit, int capacity, char *outprefix, SteinerConfig *config, char *output_folder) {
 		Graph &g = *solution.g;
 
 		SteinerSolution bestsol(&g);
@@ -849,7 +852,7 @@ public:
 
 			fprintf (stderr, "Iteration %d: %.0f, pool: %d\n", i, (double)bestsol.GetCost(), elite.GetCount());
 
-			elite.Output(stderr, 8, time_now);
+			elite.Output(stderr, 8, output_folder);
 		}
 
 		solution.CopyFrom(&bestsol);
@@ -2127,16 +2130,16 @@ public:
 		return nscanned;
 	}
 
-	static void CallFPMax(int elite_cap, int min_sup, int qtd_pattern, time_t time_now){
+	static void CallFPMax(int elite_cap, int min_sup, int qtd_pattern, char *output_folder, char *report_file_name){
 	    printf("Calling FPMax\n");
 		ostringstream buffer;
 		buffer.str("");
 //      fpmax_hnmp <semente> <id_arq_tmp> <banco de dados> <tam. do banco> <suporte minimo> <qtd de padroes> <arq. saida>
 		char fname[22+16];
-		sprintf(fname, "output/%d/padroesV.txt", time_now);
+		sprintf(fname, "output/%d/padroesV.txt", output_folder);
 		FILE *fp = fopen(fname, "w");
 		fclose(fp);
-		buffer << "./bin/fpmax_hnmp " << "1 " << random()%100 << " output/" << time_now << "/EliteV.txt " << elite_cap << " " << min_sup << " " << qtd_pattern << " " << fname;
+		buffer << "./bin/fpmax_hnmp " << "1 " << random()%100 << " output/" << output_folder << "/EliteV.txt " << elite_cap << " " << min_sup << " " << qtd_pattern << " " << fname;
 		printf(buffer.str().c_str());
 		printf("\n");
 		FILE *fp_aux_temp_clock = fopen("auxTempClock.bin", "wb");
@@ -2151,16 +2154,19 @@ public:
 		clock_t spend_time = elapsed_time[1] + elapsed_time[0];
 		printf("Clock: %d:%.12fs\n", spend_time, ((double)spend_time/CLOCKS_PER_SEC));
 		fclose(fp_aux_temp_clock);
+		FILE *report_file = fopen(report_file_name, "a");
+		fprintf(report_file,"Mining-V: %d:%.12fs\n", spend_time, ((double)spend_time/CLOCKS_PER_SEC));
+		fclose(report_file);
 		buffer.str("");
 		buffer.str("rm auxTempClock.bin");
 		fp_aux_temp_clock = fopen("auxTempClock.bin", "wb");
 		fclose(fp_aux_temp_clock);
 		v = system(buffer.str().c_str());
-		sprintf(fname, "output/%d/padroesA.txt", time_now);
+		sprintf(fname, "output/%d/padroesA.txt", output_folder);
 		fp = fopen(fname, "w");
 		fclose(fp);
 		buffer.str("");
-		buffer << "./bin/fpmax_hnmp " << "1 " << random()%100 << " output/" << time_now << "/EliteA.txt " << elite_cap << " " << min_sup << " " << qtd_pattern << " " << fname;
+		buffer << "./bin/fpmax_hnmp " << "1 " << random()%100 << " output/" << output_folder << "/EliteA.txt " << elite_cap << " " << min_sup << " " << qtd_pattern << " " << fname;
 		printf(buffer.str().c_str());
 		printf("\n");
 		v = system(buffer.str().c_str());
@@ -2172,6 +2178,9 @@ public:
 		spend_time = elapsed_time[1] + elapsed_time[0];
 		printf("Clock: %d:%.12fs\n", spend_time, ((double)spend_time/CLOCKS_PER_SEC));
 		fclose(fp_aux_temp_clock);
+		report_file = fopen(report_file_name, "a");
+		fprintf(report_file,"Mining-A: %d:%.12fs\n", spend_time, ((double)spend_time/CLOCKS_PER_SEC));
+		fclose(report_file);
 		buffer.str("");
 		buffer.str("rm auxTempClock.bin");
 		v = system(buffer.str().c_str());

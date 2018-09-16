@@ -165,13 +165,13 @@ public:
 		else return sol[FindBestPosition()]->GetCost();
 	}
 
-	void Output(FILE *file, int columns, time_t time) {
+	void Output(FILE *file, int columns, char *output_folder) {
 		char fname[19+16];
-		sprintf(fname,"output/%d/EliteD.txt", time);
+		sprintf(fname,"output/%s/EliteD.txt", output_folder);
 		FILE *fp = fopen(fname, "w");
-		sprintf(fname,"output/%d/EliteA.txt", time);
-		FILE *fd = fopen(fname, "w");
-		sprintf(fname,"output/%d/EliteV.txt", time);
+		sprintf(fname,"output/%s/EliteA.txt", output_folder);
+		FILE *fa = fopen(fname, "w");
+		sprintf(fname,"output/%s/EliteV.txt", output_folder);
 		FILE *fv = fopen(fname, "w");
 		printf("Count: %d\nCapacity:%d\n", count, capacity);
 		for (int i=1; i<=count; i++) {
@@ -189,13 +189,13 @@ public:
 			for (int e = 1; e<=m; e++) {
                 if (!sol[i]->Contains(e)) continue;
 				//if (sol[i]->g->gd.terminal[e]) continue;
-                fprintf (fd, "%d ", e);
+                fprintf (fa, "%d ", e);
                 int v, w;
                 sol[i]->g->GetEndpoints(e, v, w);
                 vertices[v] = true;
                 vertices[w] = true;
             }
-			fprintf (fd, "\n");
+			fprintf (fa, "\n");
             for(int j = 0; j < sol[i]->g->VertexCount(); j++)
                 if(vertices[j] && !sol[i]->g->IsTerminal(j))
                     fprintf(fv, "%d ", j);
@@ -204,7 +204,7 @@ public:
         }
 		fprintf (stderr, "\n");
 		fclose(fp);
-		fclose(fd);
+		fclose(fa);
 		fclose(fv);
 	}
 
