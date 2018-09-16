@@ -166,7 +166,7 @@ public:
 	}
 
 	void Output(FILE *file, int columns, char *output_folder) {
-		char fname[19+16];
+		char fname[6+2+10+strlen(output_folder)+1];
 		sprintf(fname,"output/%s/EliteD.txt", output_folder);
 		FILE *fp = fopen(fname, "w");
 		sprintf(fname,"output/%s/EliteA.txt", output_folder);

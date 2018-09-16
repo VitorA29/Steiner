@@ -578,7 +578,8 @@ public:
 		char fname_report[6+2+10+strlen(output_folder)+1];
 		sprintf(fname_report, "output/%s/Report.txt", output_folder);
 		FILE *f_report = fopen(fname_report, "w");
-		fprintf(f_report, "%s\n", name);
+		fprintf(f_report, "instance name: %s\n", name);
+		fprintf(f_report, "used seed: %d\n", seed);
 		fprintf (f_report, "totalwalltimeseconds %.12f\n", walltime);
 		Basics::ReportResults(f_report, "total", walltime + first_time, bestfound, bestknown);
 		Basics::ReportResults(f_report, "totalcpu", walltime + second_time, bestfound, bestknown);
@@ -2135,8 +2136,8 @@ public:
 		ostringstream buffer;
 		buffer.str("");
 //      fpmax_hnmp <semente> <id_arq_tmp> <banco de dados> <tam. do banco> <suporte minimo> <qtd de padroes> <arq. saida>
-		char fname[22+16];
-		sprintf(fname, "output/%d/padroesV.txt", output_folder);
+		char fname[6+2+12+strlen(output_folder)+1];
+		sprintf(fname, "output/%s/padroesV.txt", output_folder);
 		FILE *fp = fopen(fname, "w");
 		fclose(fp);
 		buffer << "./bin/fpmax_hnmp " << "1 " << random()%100 << " output/" << output_folder << "/EliteV.txt " << elite_cap << " " << min_sup << " " << qtd_pattern << " " << fname;
@@ -2162,7 +2163,7 @@ public:
 		fp_aux_temp_clock = fopen("auxTempClock.bin", "wb");
 		fclose(fp_aux_temp_clock);
 		v = system(buffer.str().c_str());
-		sprintf(fname, "output/%d/padroesA.txt", output_folder);
+		sprintf(fname, "output/%s/padroesA.txt", output_folder);
 		fp = fopen(fname, "w");
 		fclose(fp);
 		buffer.str("");
