@@ -187,7 +187,7 @@ public:
 
 	typedef enum { MS_PLAIN, MS_COMBINATION, MS_BINARY, MS_MULTILEVEL, MS_TIMEBOUNDEDCOMBINATION, MS_TIMEBOUNDEDMULTILEVEL, MS_TIMEBOUNDEDADAPTIVE, MS_NUMBER } MSType;
 	static void ShowUsage () {
-		fprintf (stderr, "Usage: steiner <stp_file> [-bb] [-ub] [-prep] [-msit] [-seed] [-mstype] [-elite] [-mine] [-pattern]\n");
+		fprintf (stderr, "Usage: steiner <stp_file> [-bb] [-ub] [-prep] [-msit] [-seed] [-mstype] [-elite] [-mine] [-pattern] [-folder]\n");
 		fprintf (stderr, "Valid types: plain(%d) combination(%d) binary(%d) multilevel(%d)\n", MS_PLAIN, MS_COMBINATION, MS_BINARY, MS_MULTILEVEL);
 		exit (-1);
 	}
@@ -306,8 +306,8 @@ public:
 		bool DATAMINING = false;
 		int min_sup = 0;
 		int qtd_pattern = 10;
-
-		time_t time_now = time(0);
+		bool DEFAULT_OUTPUT_FOLDER = true;
+		string output_base_folder = "";
 
 		int seed = 17;
 		EdgeCost primal = INFINITE_COST;
@@ -396,12 +396,32 @@ public:
 				continue;
 			}
 
+			if (strcmp(argv[i], "-folder")==0) {
+				DEFAULT_OUTPUT_FOLDER = false;
+				output_base_folder = argv[i+1];
+				continue;
+			}
+
 			//maybe config knows what to do with this parameter
 			config->ReadParameter (argv[i], argv[i+1]);
 		}
 
-		char output_folder[2+sizeof(time_t)+strlen(name)+sizeof(int)+1];
-		sprintf(output_folder,"%d_%s_%d", time_now, name, seed);
+		string output_folder_holder;
+
+		if(DEFAULT_OUTPUT_FOLDER){
+			stringstream ss;
+			time_t time_marker = time(0);
+			ss << time_marker << "_" << name << "_" << seed;
+			output_folder_holder = ss.str();
+		}
+		else{
+			stringstream ss;
+			ss << output_base_folder << "/" << seed;
+			output_folder_holder = ss.str();
+		}
+
+		char output_folder[output_folder_holder.size()+1];
+		sprintf(output_folder, "%s", output_folder_holder.c_str());
 
 		ostringstream buffer;
 		buffer.str("");
@@ -527,7 +547,7 @@ public:
 				RunMultistart(g, mstype, msit, bestfound, bestknown, config, name, NULL, &executionLog, &bestSolution);
 			}
 			else{
-				EliteMultistart(bestSolution, msit, elite_cap, "eliteFile", config, output_folder);
+				EliteMultistart(bestSolution, msit, elite_cap, "eliteFile", config, bestfound, output_folder);
 			}
 		}
 
@@ -578,12 +598,17 @@ public:
 		char fname_report[6+2+10+strlen(output_folder)+1];
 		sprintf(fname_report, "output/%s/Report.txt", output_folder);
 		FILE *f_report = fopen(fname_report, "w");
-		fprintf(f_report, "instance name: %s\n", name);
-		fprintf(f_report, "used seed: %d\n", seed);
+		fprintf(f_report, "seed %d\n", seed);
 		fprintf (f_report, "totalwalltimeseconds %.12f\n", walltime);
-		Basics::ReportResults(f_report, "total", walltime + first_time, bestfound, bestknown);
-		Basics::ReportResults(f_report, "totalcpu", walltime + second_time, bestfound, bestknown);
+		Basics::ReportResults(f_report, "", walltime + first_time, bestfound, bestknown);
+		//Basics::ReportResults(f_report, "totalcpu", walltime + second_time, bestfound, bestknown);
 		fclose(f_report);
+
+		char fname_best_aux[6+2+8+strlen(output_folder)+1];
+		sprintf(fname_best_aux, "output/%s/best.bin", output_folder);
+		FILE *f_best_aux = fopen(fname_best_aux, "w");
+		fprintf(f_best_aux, "%f", bestfound);
+		fclose(f_best_aux);
 
 		if(DATAMINING){
 			CallFPMax(elite_cap, min_sup, qtd_pattern, output_folder, fname_report);
@@ -815,12 +840,13 @@ public:
 
 
 
-	static void EliteMultistart (SteinerSolution &solution, int maxit, int capacity, char *outprefix, SteinerConfig *config, char *output_folder) {
+	static void EliteMultistart (SteinerSolution &solution, int maxit, int capacity, char *outprefix, SteinerConfig *config, EdgeCost &bestfound, char *output_folder) {
 		Graph &g = *solution.g;
 
 		SteinerSolution bestsol(&g);
 		SteinerSolution combsol(&g);
 		EdgeCost bestcost = INFINITE_COST;
+		bestfound = INFINITE_COST;
 
 		RFWLocalRandom random (RFWRandom::getInteger(1,999999999));
 
@@ -849,6 +875,7 @@ public:
 			if (curcost < bestcost) {
 				bestsol.CopyFrom(&solution);
 				bestcost = curcost;
+				bestfound = curcost;
 			}
 
 			fprintf (stderr, "Iteration %d: %.0f, pool: %d\n", i, (double)bestsol.GetCost(), elite.GetCount());

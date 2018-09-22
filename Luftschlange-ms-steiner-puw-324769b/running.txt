@@ -1,5 +1,7 @@
 Sempre use "make reset" antes de executar.(ele exclui tudo da pasta output)
 
+./bin/run luidi/B/b01.stp -seed 1 -mine 0
+
 ./bin/steiner instances/geo_original/G207.stp -seed 1 -msit 50 -elite 10 -mine 8
 
 ./bin/steiner instances/geo_original/G102.stp -seed 1 -msit 50 -elite 10 -mine 9
