@@ -10,11 +10,13 @@ SRC = ./src
 
 all: steiner
 
-build: folder fpmax steiner
-	$(CXX) $(CXXFLAGS) -o $(BIN)/run.o -c run.cpp
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $(BIN)/run $(BIN)/run.o
-	rm $(BIN)/run.o
+build: folder fpmax steiner run_instance
+	
 
+run_instance:
+	$(CXX) $(CXXFLAGS) -o $(BIN)/run_instance.o -c run_instance.cpp
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $(BIN)/run_instance $(BIN)/run_instance.o
+	rm $(BIN)/run_instance.o
 
 folder:
 	if [ ! -d $(BIN) ]; then mkdir $(BIN); fi

@@ -7,7 +7,7 @@
 using namespace std;
 
 static void ShowUsage () {
-    fprintf (stderr, "Usage: run <stp_file> [-seed] [-mine] [-maxit] [-cleanfolder]\n");
+    fprintf (stderr, "Usage: run <stp_file> [-seed] [-mine] [-maxit] [-folder]\n");
     exit (-1);
 }
 
@@ -32,7 +32,8 @@ int main (int argc, char **argv) {
     int max_seed = 10;
     int iterations = 50;
     bool MINING = false;
-    bool TIMEFOLDER = true;
+    bool DEFAULTFOLDER = true;
+    stringstream ss;
 
     for (int i=2; i<argc; i+=2) {
         if (i == argc-1) ShowUsage();
@@ -50,10 +51,9 @@ int main (int argc, char **argv) {
             iterations = atoi(argv[i+1]);
             continue;
         }
-        if (strcmp(argv[i], "-cleanfolder")==0) {
-            if (atoi(argv[i+1])!=0) {
-                TIMEFOLDER = false;
-            }
+        if (strcmp(argv[i], "-folder")==0) {
+            DEFAULTFOLDER = false;
+            ss << argv[i+1];
             continue;
         }
     }
@@ -68,15 +68,14 @@ int main (int argc, char **argv) {
     string instance_name = n[0];
 
     //starting output folder
-    stringstream ss;
-    if(TIMEFOLDER){
+    if(DEFAULTFOLDER){
         time_t time_marker = time(0);
         ss << time_marker;
         buffer.str("");
         buffer << "mkdir output/" << ss.str().c_str();
         system(buffer.str().c_str());
-        ss << "/";
     }
+    ss << "/";
     ss << instance_name;
     buffer.str("");
     buffer << "mkdir output/" << ss.str().c_str();
@@ -112,7 +111,7 @@ int main (int argc, char **argv) {
         float best_cost;
         fscanf(fp, "%f", &best_cost);
         fclose(fp);
-        fprintf(json, "\t\"%d\":{\n\t\t\"best\":%f,\n\t\t\"elite\":[\n", seed, best_cost);
+        fprintf(json, "\t\"%d\":{\n\t\t\"best\":%.0f,\n\t\t\"elite\":[\n", seed, best_cost);
         //deleting best
         buffer.str("");
         buffer << "rm " << file_name;
@@ -138,7 +137,7 @@ int main (int argc, char **argv) {
 
         //adding elite to json
         for(int i = 0;i<elite_cost.size();i++){
-            fprintf(json, "\t\t\t%f", elite_cost[i]);
+            fprintf(json, "\t\t\t%.0f", elite_cost[i]);
             if(i<elite_cost.size()-1)
                 fprintf(json, ",");
             fprintf(json, "\n");
@@ -147,6 +146,7 @@ int main (int argc, char **argv) {
         if(seed<max_seed)
             fprintf(json, ",");
         fprintf(json, "\n");
+        fflush(json);
     }
     fprintf(json, "}");
     fclose(json);
