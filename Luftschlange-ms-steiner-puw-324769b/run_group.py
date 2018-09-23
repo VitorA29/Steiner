@@ -40,13 +40,7 @@ def main():
             with open("instances/" + path + "/opt.json") as fopt:
                 opt = json.load(fopt)
                 for key in report:
-                    counter = 0
-                    average = 0
-                    instance = report[key]
-                    for seed in instance:
-                        average += instance[seed]["best"]
-                        counter += 1
-                    average /= counter
+                    average = sum(seed["best"] for seed in report[key].values())/len(report[key])
                     data[key] = ((average-opt[key])/opt[key])
 
         with open("output/" + output_folder + "/results.json", 'w') as f:
