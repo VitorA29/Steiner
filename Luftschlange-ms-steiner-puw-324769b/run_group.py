@@ -10,6 +10,11 @@ def main():
     timestamp = round(time.mktime(dts.timetuple()) + dts.microsecond/1e6)
     os.system("mkdir output/" + str(timestamp))
 
+    details_report = dict()
+    time_format = '%Y-%m-%d %H:%M:%S'
+    details_report["start"] = datetime.datetime.now().strftime(time_format)
+    details_report["iterations"] = int(sys.argv[1])
+
     final_dictionary = dict()
     for folder in os.listdir("instances/luidi"):
         path = "luidi/" + folder
@@ -47,6 +52,8 @@ def main():
             json.dump(data, f, indent=4, sort_keys=True)
             final_dictionary[folder] = data
         os.system("rm output/" + output_folder + "/results.json")
+    details_report["stop"] = datetime.datetime.now().strftime(time_format)
+    final_dictionary["#details"] = details_report
     with open("output/" + str(timestamp) + "/results.json", 'w') as f:
         json.dump(final_dictionary, f, indent=4, sort_keys=True)
 
