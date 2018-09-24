@@ -16,6 +16,7 @@ def main():
     time_format = '%Y-%m-%d %H:%M:%S'
     details_report["start"] = datetime.datetime.now().strftime(time_format)
     details_report["iterations"] = int(sys.argv[2])
+    details_report["max_seed"] = int(sys.argv[3])
 
     #Opening instances folder
     report_dict = dict()
@@ -37,7 +38,7 @@ def main():
             instance_name = instance.split(".")[0]
             if ".json" in instance:
                 continue
-            os.system("./bin/run_instance " + path + "/" + instance + " -seed 1 -maxit " + sys.argv[2] + " -mine 0 -folder " + output_folder)
+            os.system("./bin/run_instance " + path + "/" + instance + " -seed " + sys.argv[3] + " -maxit " + sys.argv[2] + " -mine 0 -folder " + output_folder)
             with open("output/" + output_folder + "/" + instance_name + "/" + instance_name + ".json") as f:
                 data = json.load(f)
                 report[instance_name] = data
