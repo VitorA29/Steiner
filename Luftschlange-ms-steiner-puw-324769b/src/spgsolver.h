@@ -304,7 +304,6 @@ public:
 		bool USEMEMORY = false;
 		int elite_cap = 0;
 		bool DATAMINING = false;
-		int min_sup = 0;
 		int qtd_pattern = 10;
 		bool DEFAULT_OUTPUT_FOLDER = true;
 		string output_base_folder = "";
@@ -385,8 +384,10 @@ public:
 			}
 
 			if (strcmp(argv[i], "-mine")==0) {
-				min_sup = atoi(argv[i+1]);
-				fprintf (stderr, "Doing mining with minimum support set to %d.\n", min_sup);
+				if(atoi(argv[i+1]) != 0){
+					fprintf (stderr, "Doing data mining.\n");
+					DATAMINING = true;
+				}
 				continue;
 			}
 
@@ -449,8 +450,6 @@ public:
 		MULTISTART = (msit != 0);
 
 		USEMEMORY = (elite_cap != 0);
-
-		DATAMINING = (min_sup != 0);
 
 		RFWRandom::randomize(seed);
 
@@ -611,7 +610,14 @@ public:
 		fclose(f_best_aux);
 
 		if(DATAMINING){
-			CallFPMax(elite_cap, min_sup, qtd_pattern, output_folder, fname_report);
+			CallFPMax(qtd_pattern, output_folder, fname_report);
+		}
+
+		if(USEMEMORY){
+			ostringstream buffer;
+			buffer.str("");
+			buffer << "rm output/" << output_folder << "/eliteCount.bin";
+			system(buffer.str().c_str());
 		}
 
 		// Dump official output logs.
@@ -882,6 +888,12 @@ public:
 
 			elite.Output(stderr, 8, output_folder);
 		}
+
+		char fname[6+2+14+strlen(output_folder)+1];
+		sprintf(fname,"output/%s/eliteCount.bin", output_folder);
+		FILE *f_elite_count = fopen(fname, "w");
+		fprintf(f_elite_count, "%d", elite.GetCount());
+		fclose(f_elite_count);
 
 		solution.CopyFrom(&bestsol);
 
@@ -2158,8 +2170,18 @@ public:
 		return nscanned;
 	}
 
-	static void CallFPMax(int elite_cap, int min_sup, int qtd_pattern, char *output_folder, char *report_file_name){
+	static void CallFPMax(int qtd_pattern, char *output_folder, char *report_file_name){
 	    printf("Calling FPMax\n");
+		int elite_cap;
+		char f_elite_count_name[6+2+14+strlen(output_folder)+1];
+		sprintf(f_elite_count_name, "output/%s/eliteCount.bin", output_folder);
+		FILE *f_elite_count = fopen(f_elite_count_name, "r");
+		fscanf(f_elite_count, "%d", &elite_cap);
+		fclose(f_elite_count);
+		if(elite_cap<2)
+			return;
+		int min_sup = elite_cap - 1;
+
 		ostringstream buffer;
 		buffer.str("");
 //      fpmax_hnmp <semente> <id_arq_tmp> <banco de dados> <tam. do banco> <suporte minimo> <qtd de padroes> <arq. saida>

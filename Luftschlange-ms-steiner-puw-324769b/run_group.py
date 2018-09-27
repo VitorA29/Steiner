@@ -38,7 +38,7 @@ def main():
             instance_name = instance.split(".")[0]
             if ".json" in instance:
                 continue
-            os.system("./bin/run_instance " + path + "/" + instance + " -seed " + sys.argv[3] + " -maxit " + sys.argv[2] + " -mine 0 -folder " + output_folder)
+            os.system("./bin/run_instance " + path + "/" + instance + " -seed " + sys.argv[3] + " -maxit " + sys.argv[2] + " -mine " + sys.argv[4] + " -folder " + output_folder)
             with open("output/" + output_folder + "/" + instance_name + "/" + instance_name + ".json") as f:
                 data = json.load(f)
                 report[instance_name] = data

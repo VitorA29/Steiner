@@ -88,7 +88,7 @@ int main (int argc, char **argv) {
     printf("Executing %s instance\n", instance_name.c_str());
     string mining = "";
     if(MINING){
-        mining = "-mine 8 ";
+        mining = "-mine 1 ";
     }
     int elite_cap = 10;
     string name_json = output_folder_path;
