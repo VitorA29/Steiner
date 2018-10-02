@@ -2,6 +2,8 @@ Sempre use "make reset" antes de executar.(ele exclui tudo da pasta output)
 
 python3 run_group.py luidi 50 10 1
 
+python3 run_group.py rosseti 50 10 0
+
 ./bin/run_instance luidi/B/b01.stp -seed 1 -mine 0
 
 ./bin/run_instance geo_original/G207.stp -seed 1 -mine 0
