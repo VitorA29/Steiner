@@ -1,8 +1,6 @@
 import os
 from os.path import isfile, join
-import sys
-import datetime, time
-import json
+import datetime, sys, time, json
 from pprint import pprint
 
 def main():
@@ -13,8 +11,8 @@ def main():
 
     #Getting start time and iterations
     details_report = dict()
-    time_format = '%Y-%m-%d %H:%M:%S'
-    details_report["start"] = datetime.datetime.now().strftime(time_format)
+    time_format = '%H:%M:%S'
+    start_time = time.time()
     details_report["iterations"] = int(sys.argv[2])
     details_report["max_seed"] = int(sys.argv[3])
 
@@ -23,6 +21,8 @@ def main():
     deviation_dict = dict()
     elite_dict = dict()
     for folder in os.listdir("instances/" + sys.argv[1]):
+        start_folder_time = time.time()
+
         path = sys.argv[1] + "/" + folder
 
         #Preparing output folder
@@ -55,21 +55,26 @@ def main():
                     elite_data[key] = [len(seed_execution["elite"]) for seed_execution in report[key].values()]
 
         #Saving execution reports
+        elapsed_folder_time = time.time() - start_folder_time
+        report["#elapsed"] = time.strftime(time_format, time.localtime(elapsed_folder_time))
         deviation_dict[folder] = deviation_data
         elite_dict[folder] = elite_data
         report_dict[folder] = report
             
-    #Ending execution
-    details_report["stop"] = datetime.datetime.now().strftime(time_format)
-    deviation_dict["#details"] = details_report
-    elite_dict["#details"] = details_report
-    report_dict["#details"] = details_report
-    with open("output/" + str(timestamp) + "/deviation.json", 'w') as f:
-        json.dump(deviation_dict, f, indent=4, sort_keys=True)
-    with open("output/" + str(timestamp) + "/elite.json", 'w') as f:
-        json.dump(elite_dict, f, indent=4, sort_keys=True)
-    with open("output/" + str(timestamp) + "/results.json", 'w') as f:
-        json.dump(report_dict, f, indent=4, sort_keys=True)
+        #Marking iteration time
+        elapsed_time = time.time() - start_time
+        details_report["elapsed"] = time.strftime(time_format, time.localtime(elapsed_time))
+
+        #Saving execution
+        deviation_dict["#details"] = details_report
+        elite_dict["#details"] = details_report
+        report_dict["#details"] = details_report
+        with open("output/" + str(timestamp) + "/deviation.json", 'w') as f:
+            json.dump(deviation_dict, f, indent=4, sort_keys=True)
+        with open("output/" + str(timestamp) + "/elite.json", 'w') as f:
+            json.dump(elite_dict, f, indent=4, sort_keys=True)
+        with open("output/" + str(timestamp) + "/results.json", 'w') as f:
+            json.dump(report_dict, f, indent=4, sort_keys=True)
 
 if __name__ == "__main__":
     main()
