@@ -858,7 +858,7 @@ public:
 
 		SolutionPool elite(capacity);
 
-		int comb_iterations = 5;
+		int comb_iterations = 4;
 
 		int num_iterations = maxit/comb_iterations + (maxit%comb_iterations==0?0:1);
 
