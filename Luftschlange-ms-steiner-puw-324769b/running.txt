@@ -8,10 +8,4 @@ python3 run_group.py rosseti 50 10 0
 
 ./bin/run_instance geo_original/G207.stp -seed 1 -mine 0
 
-./bin/steiner instances/geo_original/G207.stp -seed 1 -msit 50 -elite 10 -mine 8
-
-./bin/steiner instances/geo_original/G102.stp -seed 1 -msit 50 -elite 10 -mine 9
-
-./bin/steiner instances/geo_original/G303.stp -seed 1 -msit 50 -elite 10 -mine 9
-
-./bin/steiner instances/geo_original/G307.stp -seed 1 -msit 50 -elite 10 -mine 9 ERROR: invalid result.
+./bin/steiner instances/open/I640/i640-311.stp -seed 1 -msit 50 -elite 10 -mine 9

@@ -610,7 +610,7 @@ public:
 		fclose(f_best_aux);
 
 		if(DATAMINING){
-			CallFPMax(qtd_pattern, output_folder, fname_report);
+			CallFPMax(qtd_pattern, output_folder, fname_report, &g);
 		}
 
 		if(USEMEMORY){
@@ -2170,7 +2170,7 @@ public:
 		return nscanned;
 	}
 
-	static void CallFPMax(int qtd_pattern, char *output_folder, char *report_file_name){
+	static void CallFPMax(int qtd_pattern, char *output_folder, char *report_file_name, Graph *g){
 	    printf("Calling FPMax\n");
 		int elite_cap;
 		char f_elite_count_name[6+2+14+strlen(output_folder)+1];
@@ -2185,8 +2185,8 @@ public:
 		ostringstream buffer;
 		buffer.str("");
 //      fpmax_hnmp <semente> <id_arq_tmp> <banco de dados> <tam. do banco> <suporte minimo> <qtd de padroes> <arq. saida>
-		char fname[6+2+12+strlen(output_folder)+1];
-		sprintf(fname, "output/%s/padroesV.txt", output_folder);
+		char fname[6+2+8+4+strlen(output_folder)+1];
+		sprintf(fname, "output/%s/patternV.txt", output_folder);
 		FILE *fp = fopen(fname, "w");
 		fclose(fp);
 		buffer << "./bin/fpmax_hnmp " << "1 " << random()%100 << " output/" << output_folder << "/EliteV.txt " << elite_cap << " " << min_sup << " " << qtd_pattern << " " << fname;
@@ -2212,14 +2212,44 @@ public:
 		fp_aux_temp_clock = fopen("auxTempClock.bin", "wb");
 		fclose(fp_aux_temp_clock);
 		v = system(buffer.str().c_str());
-		sprintf(fname, "output/%s/padroesA.txt", output_folder);
-		fp = fopen(fname, "w");
+		char fname_edges[6+2+8+6+4+strlen(output_folder)+1];
+		sprintf(fname_edges, "output/%s/patternE_index.txt", output_folder);
+		fp = fopen(fname_edges, "w");
 		fclose(fp);
 		buffer.str("");
-		buffer << "./bin/fpmax_hnmp " << "1 " << random()%100 << " output/" << output_folder << "/EliteA.txt " << elite_cap << " " << min_sup << " " << qtd_pattern << " " << fname;
+		buffer << "./bin/fpmax_hnmp " << "1 " << random()%100 << " output/" << output_folder << "/EliteE.txt " << elite_cap << " " << min_sup << " " << qtd_pattern << " " << fname_edges;
 		printf(buffer.str().c_str());
 		printf("\n");
 		v = system(buffer.str().c_str());
+
+		// return patternE to Edge format
+		fp = fopen(fname_edges, "r");
+		int edge_count = -1;
+		int suport_value = -1;
+		sprintf(fname, "output/%s/patternE.txt", output_folder);
+		FILE *fpattern_holder = fopen(fname, "w");
+		while(fscanf(fp, "%d;%d", &edge_count, &suport_value) > 0){
+			fprintf(fpattern_holder, "%d;%d", edge_count, suport_value);
+			int edge_index;
+			for(int i = 0; i<edge_count; i++){
+				edge_index = -1;
+				if(i==0){
+					fprintf(fpattern_holder, ";");
+					fscanf(fp, ";%d", &edge_index);
+				}
+				else{
+					fprintf(fpattern_holder, " ");
+					fscanf(fp, " %d", &edge_index);
+				}
+				int v1, v2;
+				g->GetEndpoints(edge_index, v1, v2);
+				fprintf(fpattern_holder, "%d X%d_%d", edge_index, v1, v2);
+			}
+			fprintf(fpattern_holder, "\n");
+		}
+		fclose(fp);
+		fclose(fpattern_holder);
+
 		fp_aux_temp_clock = fopen("auxTempClock.bin", "rb");
 		elapsed_time[0]=0;
 		elapsed_time[1]=0;
@@ -2234,14 +2264,6 @@ public:
 		buffer.str("");
 		buffer.str("rm auxTempClock.bin");
 		v = system(buffer.str().c_str());
-
-//        buffer << "./fpmax_hnmp " << "1 " << random()%100 << " EliteArestas.txt " << msit << " " << 2 << " " << 10 << " padroesA.txt" ;
-//        int a = system(buffer.str().c_str());
-//        printf(buffer.str().c_str());
-//        printf("\n");
-
-        buffer.str("");
-		//printf("Vertices: %d\nArestas: %d\n", v, a);
 	}
 
 };
