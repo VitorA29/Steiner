@@ -2243,7 +2243,7 @@ public:
 				}
 				int v1, v2;
 				g->GetEndpoints(edge_index, v1, v2);
-				fprintf(fpattern_holder, "%d X%d_%d", edge_index, v1, v2);
+				fprintf(fpattern_holder, "X%d_%d", v1, v2);
 			}
 			fprintf(fpattern_holder, "\n");
 		}
