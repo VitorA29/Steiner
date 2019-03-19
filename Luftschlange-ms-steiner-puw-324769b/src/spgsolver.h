@@ -610,6 +610,8 @@ public:
 		fclose(f_best_aux);
 
 		if(DATAMINING){
+			CallFPMax(qtd_pattern, output_folder, fname_report, &g);
+
             char fname[6+2+12+strlen(output_folder)+1];
             sprintf(fname, "output/%s/padroesA.dot", output_folder);
             printf("******************%s*********************\n", fname);

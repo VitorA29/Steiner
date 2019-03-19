@@ -169,8 +169,8 @@ public:
 		char fname[6+2+10+strlen(output_folder)+1];
 		sprintf(fname,"output/%s/EliteD.txt", output_folder);
 		FILE *fd = fopen(fname, "w");
-		sprintf(fname,"output/%s/EliteA.txt", output_folder);
-		FILE *fa = fopen(fname, "w");
+		sprintf(fname,"output/%s/EliteE.txt", output_folder);
+		FILE *fe = fopen(fname, "w");
 		sprintf(fname,"output/%s/EliteV.txt", output_folder);
 		FILE *fv = fopen(fname, "w");
         sprintf(fname,"output/%s/Solutions.dot", output_folder);
@@ -196,13 +196,13 @@ public:
 			for (int e = 1; e<=m; e++) {
                 if (!sol[i]->Contains(e)) continue;
 				//if (sol[i]->g->gd.terminal[e]) continue;
-                fprintf (fa, "%d ", e);
+                fprintf (fe, "%d ", e);
                 int v, w;
                 sol[i]->g->GetEndpoints(e, v, w);
                 vertices[v] = true;
                 vertices[w] = true;
             }
-			fprintf (fa, "\n");
+			fprintf (fe, "\n");
             for(int j = 0; j < sol[i]->g->VertexCount(); j++)
                 if(vertices[j] && !sol[i]->g->IsTerminal(j))
                     fprintf(fv, "%d ", j);
@@ -211,7 +211,7 @@ public:
         }
 		fprintf (stderr, "\n");
 		fclose(fd);
-		fclose(fa);
+		fclose(fe);
 		fclose(fv);
 		fclose(fdot);
 		fclose(f_elite_aux);
