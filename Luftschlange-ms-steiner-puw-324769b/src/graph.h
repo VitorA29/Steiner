@@ -581,17 +581,13 @@ public:
 
 		int length, support, aux, padrao = 0, v, w;
 		while(fscanf(fp, "%d;%d;", &length, &support) != EOF){
-		    printf("Length: %d\n", length);
 			for(int i = 0; i < length; i++){
 				fscanf(fp, "%d", &aux);
-				printf("%s", cores[0]);
 				GetEndpoints(aux, v, w);
-                printf("%d -- %d [color=%s];\n", v, w, cores[padrao]);
 				fprintf(file, "%d -- %d [color=%s];\n", v, w, cores[padrao]);
 			}
 			padrao++;
 		}
-        printf("Length---: %d\n", length);
 		fprintf(file, "}\n");
 	}
 
