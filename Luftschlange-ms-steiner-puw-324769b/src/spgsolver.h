@@ -622,7 +622,15 @@ public:
 
 		if(DATAMINING){
 			CallFPMax(qtd_pattern, output_folder, fname_report, &g);
-		}
+
+            char fname[6+2+12+strlen(output_folder)+1];
+            sprintf(fname, "output/%s/padroesA.dot", output_folder);
+
+			FILE *fd = fopen(fname, "w");
+			g.OutputDot(fd, output_folder);
+            fclose(fd);
+
+        }
 
 		if(USEMEMORY){
 			ostringstream buffer;
@@ -2181,8 +2189,9 @@ public:
 		return nscanned;
 	}
 
+
 	static void CallFPMax(int qtd_pattern, char *output_folder, char *report_file_name, Graph *g){
-	    printf("Calling FPMax\n");
+		printf("Calling FPMax\n");
 		int elite_cap;
 		char f_elite_count_name[6+2+14+strlen(output_folder)+1];
 		sprintf(f_elite_count_name, "output/%s/eliteCount.bin", output_folder);
@@ -2276,5 +2285,4 @@ public:
 		buffer.str("rm auxTempClock.bin");
 		v = system(buffer.str().c_str());
 	}
-
 };

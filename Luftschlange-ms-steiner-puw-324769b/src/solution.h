@@ -108,6 +108,25 @@ public:
 	}
 
 
+	void OutputDot(FILE* file){
+		fprintf(file, "graph{\n");
+		fprintf(file, "node [shape=circle fontsize=16]\nedge [length=100, color=gray, fontcolor=black]\n");
+
+		int n = g->VertexCount(), m = g->EdgeCount(), v, w;
+		for (int e = 1; e<=m; e++) {
+			if(Contains(e)){
+                g->GetEndpoints(e, v, w);
+				fprintf(file, "%d -- %d;\n", v, w);
+			}
+		}
+
+		for(int i = 0; i < n; i++) {
+            if (g->IsTerminal(i)) {
+                fprintf(file, "%d [fontcolor=white, color=red];\n", i);
+            }
+        }
+        fprintf(file, "}\n");
+	}
 
 
 	/// Remove edge e from the current solution. Returns true iff

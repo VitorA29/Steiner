@@ -212,7 +212,7 @@ public:
 	
 	void OutputGraph (FILE *file) {
 		for (int v=1; v<=n; v++) OutputAdjacencyList(file, v);
-	} 
+	}
 
 	inline double GetFixedCost() {return gd.fixed;}
 	inline void SetFixedCost(EdgeCost f) {gd.SetFixed(f);}
@@ -568,6 +568,27 @@ public:
 			}
 			fprintf (stderr, "\n");
 		}		
+	}
+
+	void OutputDot(FILE* file, char *output_folder){
+		const char *cores[10] = {"green", "darkblue", "magenta", "yellow", "aqua", "lime", "red", "darkcyan", "darkred", "orange"};
+		char fname[6+2+12+strlen(output_folder)+1];
+
+		fprintf(file, "graph{\n");
+
+		sprintf(fname, "output/%s/padroesA.txt", output_folder);
+		FILE *fp = fopen(fname, "r");
+
+		int length, support, aux, padrao = 0, v, w;
+		while(fscanf(fp, "%d;%d;", &length, &support) != EOF){
+			for(int i = 0; i < length; i++){
+				fscanf(fp, "%d", &aux);
+				GetEndpoints(aux, v, w);
+				fprintf(file, "%d -- %d [color=%s];\n", v, w, cores[padrao]);
+			}
+			padrao++;
+		}
+		fprintf(file, "}\n");
 	}
 
 	void ReadDimacs (FILE *file, bool perturb) {
