@@ -11,7 +11,8 @@ SRC = ./src
 all: steiner
 
 build: folder fpmax steiner run_instance
-	
+
+.SILENT: folder
 
 run_instance:
 	$(CXX) $(CXXFLAGS) -o $(BIN)/run_instance.o -c run_instance.cpp

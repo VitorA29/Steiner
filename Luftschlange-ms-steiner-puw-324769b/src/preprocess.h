@@ -52,6 +52,7 @@ public:
 			}
 			fprintf (file, "End\n\n");
 		}
+		fprintf (file, "EOF\n");
 		fclose(file);
 	}
 

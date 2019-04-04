@@ -97,9 +97,16 @@ int main (int argc, char **argv) {
     name_json += ".json";
     FILE *json = fopen(name_json.c_str(), "w");
     fprintf(json, "{\n");
+
+    //preparing the instance, making the preprocess
+    buffer.str("");
+    buffer << "./bin/steiner instances/"<< instance_path << " -preprocess " << output_folder_path << "/" << instance_name << "_preproceded.stp";
+    system(buffer.str().c_str());
+
     for(int seed=1;seed<=max_seed;seed++){
         buffer.str("");
         buffer << "./bin/steiner instances/"<< instance_path << " -seed " << seed << " -msit " << iterations << " -elite "<< elite_cap << " " << mining <<"-folder " << output_folder;
+        // buffer << "./bin/steiner " << output_folder_path << "/" << instance_name << "_preproceded.stp " << " -seed " << seed << " -msit " << iterations << " -elite "<< elite_cap << " " << mining <<"-folder " << output_folder;
         system(buffer.str().c_str());
 
         //preparing file name best

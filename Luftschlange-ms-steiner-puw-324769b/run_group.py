@@ -106,6 +106,8 @@ def main():
         with open("instances/" + path + "/opt.json") as fopt:
                 opt = json.load(fopt)
                 for key in report:
+                    if not len(report[key]) > 0:
+                        break
                     average = sum(seed_execution["best"] for seed_execution in report[key].values())/len(report[key])
                     deviation_data[key] = ((average-opt[key])/opt[key])
                     elite_data[key] = [len(seed_execution["elite"]) for seed_execution in report[key].values()]

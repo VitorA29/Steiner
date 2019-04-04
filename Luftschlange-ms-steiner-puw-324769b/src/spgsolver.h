@@ -316,6 +316,17 @@ public:
 
 		for (int i=2; i<argc; i+=2) {
 			if (i == argc-1) ShowUsage();
+
+			if (strcmp(argv[i], "-preprocess")==0) {
+				string outputSTPFile = argv[i+1];
+				vector<bool> keepVector;
+				for(int i=1; i<=g.EdgeCount();i++){
+					keepVector.push_back(true);
+				}
+				Preprocessing::OutputSTP(outputSTPFile, g, keepVector);
+				return;
+			}
+
 			if (strcmp(argv[i], "-ub")==0) {
 				primal = atoi(argv[i+1]);
 				fprintf (stderr, "Setting upper bound to %.0f.\n", primal);
