@@ -1,5 +1,7 @@
 Sempre use "make reset" antes de executar.(ele exclui tudo da pasta output)
 
+python3 analyze.py 1555191343
+
 python3 run_group.py teste 50 10 1
 
 python3 run_group.py luidi 50 10 1
