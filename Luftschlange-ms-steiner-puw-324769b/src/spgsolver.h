@@ -623,12 +623,12 @@ public:
 		if(DATAMINING){
 			CallFPMax(qtd_pattern, output_folder, fname_report, &g);
 
-            char fname[6+2+12+strlen(output_folder)+1];
-            sprintf(fname, "output/%s/padroesA.dot", output_folder);
-
-			FILE *fd = fopen(fname, "w");
-			g.OutputDot(fd, output_folder);
-            fclose(fd);
+//          char fname[6+2+12+strlen(output_folder)+1];
+//          sprintf(fname, "output/%s/padroesA.dot", output_folder);
+//
+//			FILE *fd = fopen(fname, "w");
+//			g.OutputDot(fd, output_folder);
+//            fclose(fd);
 
         }
 
@@ -851,8 +851,6 @@ public:
 				fprintf (stderr, "Ran out of levels!\n");
 				break;
 			}
-
-
 		}
 
 

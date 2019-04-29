@@ -173,8 +173,8 @@ public:
 		FILE *fe = fopen(fname, "w");
 		sprintf(fname,"output/%s/EliteV.txt", output_folder);
 		FILE *fv = fopen(fname, "w");
-        sprintf(fname,"output/%s/Solutions.dot", output_folder);
-        FILE *fdot = fopen(fname, "w");
+        sprintf(fname,"output/%s/terminals.txt", output_folder);
+        FILE *ft = fopen(fname, "w");
 		printf("Count: %d\nCapacity:%d\n", count, capacity);
 		char fname_elite_aux[6+2+9+strlen(output_folder)+1];
 		sprintf(fname_elite_aux, "output/%s/elite.bin", output_folder);
@@ -189,7 +189,6 @@ public:
 			fprintf (fd, "Index %d: %6lg\n", i, sol[i] ? (double)sol[i]->GetCost() : -1.0);
 			fprintf(f_elite_aux, "%f\n", sol[i] ? (double)sol[i]->GetCost() : -1.0);
 			sol[i]->Output(fd);
-            sol[i]->OutputDot(fdot);
             bool vertices[sol[i]->g->VertexCount()];
 			for(int j = 0; j < sol[i]->g->VertexCount(); j++) vertices[j] = false;
 			int m = sol[i]->g->EdgeCount();
@@ -203,20 +202,25 @@ public:
                 vertices[w] = true;
             }
 			fprintf (fe, "\n");
-            for(int j = 0; j < sol[i]->g->VertexCount(); j++)
-                if(vertices[j] && !sol[i]->g->IsTerminal(j))
-                    fprintf(fv, "%d ", j);
+            for(int j = 0; j < sol[i]->g->VertexCount(); j++) {
+				if (vertices[j] && !sol[i]->g->IsTerminal(j))
+					fprintf(fv, "%d ", j);
+				if(i == 0) {
+                    if (sol[i]->g->IsTerminal(j)) {
+                        fprintf(ft, "%d ", j);
+                    }
+                }
+			}
+
             fprintf(fv, "\n");
-            printf("Escreveu %d\n", i);
         }
 		fprintf (stderr, "\n");
 		fclose(fd);
 		fclose(fe);
 		fclose(fv);
-		fclose(fdot);
+		fclose(ft);
 		fclose(f_elite_aux);
 	}
-
 
 	void Reset() { count = 0; }
 
