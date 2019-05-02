@@ -1,6 +1,9 @@
 import sys, os, json
 from os.path import exists
 
+import xlsxwriter as xlsxwriter
+
+
 def main():
     best_solution_dict = dict()
     with open(used_time_stamp_folder + "/results.json") as f:
@@ -49,8 +52,14 @@ def main():
                                 elite_edges_set.add(edge)
                                 best_solution_dict[group][instance][seed]["elite_edges"].append(edge)
 
-                    best_solution_dict[group][instance][seed]["elite_vertex"] = list(elite_vertex_set)
+                    elite_vertex_list = list(elite_vertex_set)
+                    elite_vertex_list.sort()
+                    best_solution_dict[group][instance][seed]["elite_vertex"] = elite_vertex_list
                     best_solution_dict[group][instance][seed]["#inviability"] = 0
+                    with open(root + "/terminals.txt") as t:
+                        line = t.read()
+                        line = line[:-1].split(" ")
+                        best_solution_dict[group][instance][seed]["terminals"] = line
                     if "patternE.txt" in files:
                         with open(root + "/patternE.txt") as pattern_file:
                             line_index = 1
@@ -74,7 +83,6 @@ def main():
                                                 vertices.add(pattern_vertex[1])
 
                                             except:
-                                                #print(pattern_vertex)
                                                 log.write("group " + group + "Instance " + instance + "edge " + edge)
                                 pattern_process_dict[line_index] = dict()
                                 pattern_process_dict[line_index]["#Elite-Pattern"] = list(elite_edges_set.difference(pattern_edges))
@@ -83,8 +91,8 @@ def main():
                                 line_index += 1
                             best_solution_dict[group][instance][seed]["pattern"] = pattern_process_dict
                             best_solution_dict[group][instance][seed]["pattern_union"] = list(pattern_union)
-                        print("done " + seed)
-                        exportDot(best_solution_dict[group][instance][seed], group, instance, seed)
+                    exportDot(best_solution_dict[group][instance][seed], group, instance, seed)
+                    print("done " + seed)
                 print("done " + instance)
 
     with open(used_time_stamp_folder + "/analyze.json", 'w') as f:
@@ -101,78 +109,121 @@ def exportDot(solution, group, instance, seed):
             (a, b) = edge[1:].split('_')
             f.write(a + " -- " + b + ";\n")
 
-        with open(folder_name + "/terminals.txt") as t:
-            line = t.read()
-            line = line[:-1].split(" ")
-            solution["terminals"] = line
-            for n in line:
-                f.write(n + " [fontcolor=white, color=red];\n")
+        for n in solution["terminals"]:
+            f.write(n + " [fontcolor=white, color=red];\n")
 
-        pattern = solution["pattern_union"]
-        for p in pattern:
-            try:
+        try:
+            pattern = solution["pattern_union"]
+            for p in pattern:
                 (a, b) = p[1:].split('_')
-            except:
-                print("Erro!" + p)
-            f.write(a + " -- " + b + "[color=" + cores[0] + "];\n")
+                f.write(a + " -- " + b + "[color=" + cores[0] + "];\n")
+        except:
+            pass
 
         f.write("}")
 
 def gerar_estatistica():
-    total_instances = 0
-    total_solution_seeds = 0
-    solutions_with_inviability = 0
-    num_optimum = 0
-    avg_edge_patterns = 0
-    avg_solution_size_vertice = 0
-    avg_steiner_vertices = 0
-    avg_diff_steiner_vertices = 0
-    avg_diff_edges = 0
-    avg_equals_edges = 0
-    avg_equals_steiner_vertices = 0
 
-    with open(used_time_stamp_folder + "/analyze.json") as f:
-        results = json.load(f)
+    excel = xlsxwriter.Workbook(used_time_stamp_folder + '/Resultados.xlsx')
+    worksheet = excel.add_worksheet()
+    colunas = ["Grupo",
+               "Nº de Instâncias",
+               "Nº de Ótimos",
+               "Nº de execuções",
+               "Nº médio de soluções encontradas",
+               "Soluções com inviabilidade",
+               "Tamanho médio da solução",
+               "Nº médio de vértices não terminais",
+               "A-B",
+               "B-A",
+               "A ∩ B"
+               ]
+    row = 0
+    for i in range(len(colunas)):
+        worksheet.write(row, i, colunas[i])
+    row += 1
+    worksheet.write(row, 0, "A = Arestas da solução")
+    worksheet.write(row, 1, "B = Arestas da união de padroes")
+
+    with open(used_time_stamp_folder + "/analyze.json") as f, open(used_time_stamp_folder + "/results.json") as r, open(used_time_stamp_folder + "/deviation.json") as d:
+        analyze = json.load(f)
+        results = json.load(r)
+        deviation = json.load(d)
         for group in results.keys():
-            for instance in results[group].keys():
-                total_solution_seeds += 1
-                for seed in results[group][instance].keys():
-                    result = results[group][instance][seed]
-                    total_instances += 1
-                    if result["#inviability"] > 0:
-                        solutions_with_inviability += 1
-                    try:
-                        avg_edge_patterns += len(result["pattern"])
-                        avg_solution_size_vertice += len(result["elite_vertex"])
-                        avg_steiner_vertices += len(result["elite_vertex"]) - len(result["terminals"])
-                        avg_diff_edges += len(result["#Elite-Pattern"])
-                        avg_equals_edges += len(result["elite_edges"]) - avg_diff_edges
-
-                        vertices = set(result["elite_vertex"])
-                        steiner_vertices = vertices.difference(result["terminals"])
-                        avg_diff_steiner_vertices += len(steiner_vertices)
-                    except:
-                        pass
-
-    with open(used_time_stamp_folder + "/deviation.json") as f:
-        deviation = json.load(f)
-        for group in deviation.keys():
             if group.startswith("#"):
                 continue
+            row += 1
+            total_instances = 0
+            total_solution_seeds = 0
+            total_solutions_found = 0
+            solutions_with_inviability = 0
+            avg_solution_size_vertice = 0
+            avg_steiner_vertices = 0
+            num_optimum = 0
+            num_diff_edges_sol = 0
+            num_diff_edges_pattern = 0
+            num_intersect = 0
             for instance in results[group].keys():
+                if instance.startswith("#"):
+                    continue
+                total_instances += 1
+                total_solution_seeds += len(analyze[group][instance])
+
                 if deviation[group][instance] == 0.0:
                     num_optimum += 1
 
-    with open(used_time_stamp_folder + "/statistics.txt", 'w') as f:
-        f.write("Total solutions: " + str(total_solution_seeds))
-        f.write("\nNumber of instances: " + str(total_instances))
-        f.write("\nSolutions with inviability: " + str(solutions_with_inviability))
-        f.write("\nOptimum solutions: " + str(num_optimum))
-        f.write("\nAverage number of patterns: " + str(avg_edge_patterns/total_instances))
-        f.write("\nAverage length of solution: " + str(avg_solution_size_vertice/total_instances))
-        f.write("\nAverage number of steiner vertices: " + str(avg_steiner_vertices/total_instances))
-        f.write("\nAverage difference steiner vertices: " + str(avg_diff_steiner_vertices/total_instances))
-        f.write("\nAverage equals edges: " + str(avg_equals_steiner_vertices/total_instances))
+                for seed in results[group][instance].keys():
+                    result_seed = results[group][instance][seed]
+                    analyze_seed = analyze[group][instance][seed]
+                    total_solutions_found += len(result_seed["elite"])
+                    avg_solution_size_vertice += len(analyze_seed["elite_vertex"])
+                    avg_steiner_vertices += len(analyze_seed["elite_vertex"]) - len(analyze_seed["terminals"])
+                    if analyze_seed["#inviability"] > 0:
+                        solutions_with_inviability += 1
+                    try:
+                        pattern_union = set(analyze_seed["pattern_union"])
+                        elite_edges = set(analyze_seed["elite_edges"])
+                        num_diff_edges_sol += len(elite_edges.difference(pattern_union))
+                        num_diff_edges_pattern += len(pattern_union.difference(elite_edges))
+                        num_intersect = len(elite_edges.intersection(pattern_union))
+                        log.write("\n" + group + " " + instance + " " + seed + ": " + str(num_intersect) + " " + str(elite_edges) + str(pattern_union))
+                    except:
+                        pass
+
+            worksheet.write(row, 0, group)
+            worksheet.write(row, 1, total_instances)
+            worksheet.write(row, 2, num_optimum)
+            worksheet.write(row, 3, total_solution_seeds)
+            worksheet.write(row, 4, total_solutions_found/total_solution_seeds)
+            worksheet.write(row, 5, solutions_with_inviability)
+            worksheet.write(row, 6, avg_solution_size_vertice/total_solution_seeds)
+            worksheet.write(row, 7, avg_steiner_vertices/total_solution_seeds)
+            worksheet.write(row, 8, num_diff_edges_sol/total_solution_seeds)
+            worksheet.write(row, 9, num_diff_edges_pattern/total_solution_seeds)
+            worksheet.write(row, 10, num_intersect/total_solution_seeds)
+
+
+        #     for instance in results[group].keys():
+        #         total_solution_seeds += 1
+        #         for seed in results[group][instance].keys():
+        #             result = results[group][instance][seed]
+        #             total_instances += 1
+        #             if result["#inviability"] > 0:
+        #                 solutions_with_inviability += 1
+        #             try:
+        #                 avg_edge_patterns += len(result["pattern"])
+        #                 avg_solution_size_vertice += len(result["elite_vertex"])
+        #                 avg_steiner_vertices += len(result["elite_vertex"]) - len(result["terminals"])
+        #                 avg_diff_edges += len(result["#Elite-Pattern"])
+        #                 avg_equals_edges += len(result["elite_edges"]) - avg_diff_edges
+        #
+        #                 vertices = set(result["elite_vertex"])
+        #                 steiner_vertices = vertices.difference(result["terminals"])
+        #                 avg_diff_steiner_vertices += len(steiner_vertices)
+        #             except:
+        #                 pass
+
+    excel.close()
 
 
 used_time_stamp_folder = "./output/" + sys.argv[1]

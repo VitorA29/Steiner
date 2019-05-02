@@ -205,7 +205,7 @@ public:
             for(int j = 0; j < sol[i]->g->VertexCount(); j++) {
 				if (vertices[j] && !sol[i]->g->IsTerminal(j))
 					fprintf(fv, "%d ", j);
-				if(i == 0) {
+				if(i == 1) {
                     if (sol[i]->g->IsTerminal(j)) {
                         fprintf(ft, "%d ", j);
                     }
