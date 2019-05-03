@@ -185,7 +185,7 @@ def gerar_estatistica():
                         elite_edges = set(analyze_seed["elite_edges"])
                         num_diff_edges_sol += len(elite_edges.difference(pattern_union))
                         num_diff_edges_pattern += len(pattern_union.difference(elite_edges))
-                        num_intersect = len(elite_edges.intersection(pattern_union))
+                        num_intersect += len(elite_edges.intersection(pattern_union))
                         log.write("\n" + group + " " + instance + " " + seed + ": " + str(num_intersect) + " " + str(elite_edges) + str(pattern_union))
                     except:
                         pass
