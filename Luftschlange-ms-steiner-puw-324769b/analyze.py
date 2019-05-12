@@ -60,6 +60,7 @@ def main():
                         line = t.read()
                         line = line[:-1].split(" ")
                         best_solution_dict[group][instance][seed]["terminals"] = line
+
                     if "patternE.txt" in files:
                         with open(root + "/patternE.txt") as pattern_file:
                             line_index = 1
@@ -76,14 +77,15 @@ def main():
                                         pattern_vertex = edge[1:].split("_")
                                         if pattern_vertex[0] in vertices and pattern_vertex[1] in vertices:
                                             best_solution_dict[group][instance][seed]["#inviability"] += 1
-                                            log.write("inviability " + "group " + group + " Instance " + instance + " edge " + edge + "\n")
+                                            # log.write("inviability " + "group " + group + " Instance " + instance + " edge " + edge + "\n")
                                         else:
                                             try:
                                                 vertices.add(pattern_vertex[0])
                                                 vertices.add(pattern_vertex[1])
 
                                             except:
-                                                log.write("group " + group + "Instance " + instance + "edge " + edge)
+                                                # log.write("group " + group + "Instance " + instance + "edge " + edge)
+                                                pass
                                 pattern_process_dict[line_index] = dict()
                                 pattern_process_dict[line_index]["#Elite-Pattern"] = list(elite_edges_set.difference(pattern_edges))
                                 pattern_process_dict[line_index]["#Pattern-Elite"] = list(pattern_edges.difference(elite_edges_set))
@@ -91,6 +93,18 @@ def main():
                                 line_index += 1
                             best_solution_dict[group][instance][seed]["pattern"] = pattern_process_dict
                             best_solution_dict[group][instance][seed]["pattern_union"] = list(pattern_union)
+
+                    if "patternV.txt" in files:
+                        pattern_vertex = set()
+                        with open(root + "/patternV.txt") as pattern_file:
+                            for line in pattern_file:
+                                vertices = line.split(";")[-1][:-1].split(" ")
+                                # log.write(str(vertices) + "\n")
+                                for v in vertices:
+                                    pattern_vertex.add(v)
+                        best_solution_dict[group][instance][seed]["pattern_vertex"] = list(pattern_vertex)
+
+
                     exportDot(best_solution_dict[group][instance][seed], group, instance, seed)
                     print("done " + seed)
                 print("done " + instance)
@@ -130,20 +144,21 @@ def gerar_estatistica():
                "Nº de Instâncias",
                "Nº de Ótimos",
                "Nº de execuções",
-               "Nº médio de soluções encontradas",
+               "Tamanho médio do conj. Elite",
                "Soluções com inviabilidade",
-               "Tamanho médio da solução",
+               "Tamanho médio das soluções",
                "Nº médio de vértices não terminais",
                "A-B",
                "B-A",
-               "A ∩ B"
+               "A ∩ B",
+               "C-D",
+               "D-C",
+               "C ∩ D"
                ]
     row = 0
+
     for i in range(len(colunas)):
         worksheet.write(row, i, colunas[i])
-    row += 1
-    worksheet.write(row, 0, "A = Arestas da solução")
-    worksheet.write(row, 1, "B = Arestas da união de padroes")
 
     with open(used_time_stamp_folder + "/analyze.json") as f, open(used_time_stamp_folder + "/results.json") as r, open(used_time_stamp_folder + "/deviation.json") as d:
         analyze = json.load(f)
@@ -162,7 +177,11 @@ def gerar_estatistica():
             num_optimum = 0
             num_diff_edges_sol = 0
             num_diff_edges_pattern = 0
-            num_intersect = 0
+            num_intersect_edges = 0
+            num_diff_vertex_sol = 0
+            num_diff_vertex_pattern = 0
+            num_intersect_vertex = 0
+            seeds_with_mining = 0
             for instance in results[group].keys():
                 if instance.startswith("#"):
                     continue
@@ -177,16 +196,23 @@ def gerar_estatistica():
                     analyze_seed = analyze[group][instance][seed]
                     total_solutions_found += len(result_seed["elite"])
                     avg_solution_size_vertice += len(analyze_seed["elite_vertex"])
-                    avg_steiner_vertices += len(analyze_seed["elite_vertex"]) - len(analyze_seed["terminals"])
+                    steiner_vertices = set(analyze_seed["elite_vertex"]).difference(set(analyze_seed["terminals"]))
+                    # log.write("group " + group + "Instance " + instance + "steiner vertices " + str(steiner_vertices) + "\n")
+                    avg_steiner_vertices += len(steiner_vertices)
                     if analyze_seed["#inviability"] > 0:
                         solutions_with_inviability += 1
                     try:
+                        seeds_with_mining += 1
                         pattern_union = set(analyze_seed["pattern_union"])
                         elite_edges = set(analyze_seed["elite_edges"])
                         num_diff_edges_sol += len(elite_edges.difference(pattern_union))
                         num_diff_edges_pattern += len(pattern_union.difference(elite_edges))
-                        num_intersect += len(elite_edges.intersection(pattern_union))
-                        log.write("\n" + group + " " + instance + " " + seed + ": " + str(num_intersect) + " " + str(elite_edges) + str(pattern_union))
+                        num_intersect_edges += len(elite_edges.intersection(pattern_union))
+
+                        pattern_vertex = set(analyze_seed["pattern_vertex"])
+                        num_diff_vertex_sol += len(steiner_vertices.difference(pattern_vertex))
+                        num_diff_vertex_pattern += len(pattern_vertex.difference(steiner_vertices))
+                        num_intersect_vertex += len(steiner_vertices.intersection(pattern_vertex))
                     except:
                         pass
 
@@ -198,10 +224,23 @@ def gerar_estatistica():
             worksheet.write(row, 5, solutions_with_inviability)
             worksheet.write(row, 6, avg_solution_size_vertice/total_solution_seeds)
             worksheet.write(row, 7, avg_steiner_vertices/total_solution_seeds)
-            worksheet.write(row, 8, num_diff_edges_sol/total_solution_seeds)
-            worksheet.write(row, 9, num_diff_edges_pattern/total_solution_seeds)
-            worksheet.write(row, 10, num_intersect/total_solution_seeds)
+            worksheet.write(row, 8, num_diff_edges_sol/seeds_with_mining)
+            worksheet.write(row, 9, num_diff_edges_pattern/seeds_with_mining)
+            worksheet.write(row, 10, num_intersect_edges/seeds_with_mining)
+            worksheet.write(row, 11, num_diff_vertex_sol/seeds_with_mining)
+            worksheet.write(row, 12, num_diff_vertex_pattern/seeds_with_mining)
+            worksheet.write(row, 13, num_intersect_vertex/seeds_with_mining)
 
+        row += 1
+        legenda = [
+            "A = Arestas da solução",
+            "B = Arestas da união de padroes",
+            "C = Vértices não terminais da solução",
+            "D = Vértices da união de padroes"
+        ]
+        for l in legenda:
+            row += 1
+            worksheet.write(row, 0, l)
 
         #     for instance in results[group].keys():
         #         total_solution_seeds += 1

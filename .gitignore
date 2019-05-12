@@ -11,3 +11,5 @@ Luftschlange-ms-steiner-puw-324769b/saved/
 .vscode/
 ./cmake-build-debug
 CMakeLists.txt
+
+.venv/
