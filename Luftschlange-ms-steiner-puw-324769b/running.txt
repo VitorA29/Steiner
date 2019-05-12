@@ -2,14 +2,14 @@ Sempre use "make reset" antes de executar.(ele exclui tudo da pasta output)
 
 python3 analyze.py 1555191343
 
-python3 run_group.py teste 50 10 1
+python3 run_group.py teste 999999 5 1 1 limitado em 1h de execução e se achar o melhor valor
 
-python3 run_group.py luidi 50 10 1
+python3 run_group.py luidi 50 5 1 1
 
-python3 run_group.py rosseti 50 10 0
+python3 run_group.py rosseti 50 5 0 1
 
 ./bin/run_instance luidi/B/b01.stp -seed 1 -mine 0
 
-./bin/run_instance geo_original/G207.stp -seed 1 -mine 0
+./bin/run_instance geo_original/G207.stp -seed 1 -mine 0 -bestbound X
 
-./bin/steiner instances/open/I640/i640-311.stp -seed 1 -msit 50 -elite 10 -mine 9
+./bin/steiner instances/open/I640/i640-311.stp -seed 1 -msit 50 -elite 10 -mine 9 -timeout 3600 -earlystopbound X

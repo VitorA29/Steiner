@@ -17,6 +17,13 @@ def main():
     details_report["iterations"] = int(sys.argv[2])
     details_report["max_seed"] = int(sys.argv[3])
 
+    # Some parameters initialization
+    max_seed = sys.argv[3]
+    data_mining = sys.argv[4]
+    early_stop = False
+    if not sys.argv[5] == 0:
+        early_stop = True
+
     #Opening instances folder
     report_dict = dict()
     deviation_dict = dict()
@@ -33,15 +40,25 @@ def main():
         #Getting instances files
         onlyfiles = [f for f in os.listdir("instances/" + path) if isfile(join("instances/" + path, f))]
 
+        # Getting the best value information
+        opt = dict()
+        with open("instances/" + path + "/opt.json") as fopt:
+                opt = json.load(fopt)
+
         #Executing instances
         report = dict()
         for instance in onlyfiles:
             instance_name = instance.split(".")[0]
             if ".json" in instance:
                 continue
-            max_seed = sys.argv[3]
-            data_mining = sys.argv[4]
-            os.system("./bin/run_instance " + path + "/" + instance + " -seed " + max_seed + " -maxit " + sys.argv[2] + " -mine " + data_mining + " -folder " + output_folder)
+
+            bash_cmd = "./bin/run_instance " + path + "/" + instance + " -seed " + max_seed + " -maxit " + sys.argv[2] + " -mine " + data_mining + " -folder " + output_folder
+
+            # Check if should early stop
+            if early_stop:
+                bash_cmd += " -bestbound " + str(opt[instance_name])
+
+            os.system(bash_cmd)
             with open("output/" + output_folder + "/" + instance_name + "/" + instance_name + ".json") as f:
                 data = json.load(f)
                 report[instance_name] = data
@@ -99,13 +116,10 @@ def main():
                         with open(pattern_dict_json_name, 'w') as f:
                             json.dump(reversed_pattern_dict, f, indent=4)
 
-
         #Validating group
         deviation_data = dict()
         elite_data = dict()
-        with open("instances/" + path + "/opt.json") as fopt:
-                opt = json.load(fopt)
-                for key in report:
+        for key in report:
                     if not len(report[key]) > 0:
                         break
                     average = sum(seed_execution["best"] for seed_execution in report[key].values())/len(report[key])
