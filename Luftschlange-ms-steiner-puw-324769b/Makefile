@@ -8,7 +8,7 @@ SRC = ./src
 
 .PHONY: steiner
 
-all: steiner
+all: build
 
 build: folder fpmax steiner run_instance
 

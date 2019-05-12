@@ -100,7 +100,7 @@ def main():
 
 
 def exportDot(solution, group, instance, seed):
-    cores = ["magenta", "aqua", "green", "yellow", "darkblue", "lime", "red", "darkcyan", "darkred", "orange"];
+    cores = ["magenta", "aqua", "green", "yellow", "darkblue", "lime", "red", "darkcyan", "darkred", "orange"]
     folder_name = used_time_stamp_folder + "/" + group + "/" + instance + "/" + seed
     with open(folder_name + "/solution.dot", 'w') as f:
         f.write("graph{\n")

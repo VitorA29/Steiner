@@ -7,7 +7,7 @@
 using namespace std;
 
 static void ShowUsage () {
-    fprintf (stderr, "Usage: run <stp_file> [-seed] [-mine] [-maxit] [-folder]\n");
+    fprintf (stderr, "Usage: run <stp_file> [-seed] [-mine] [-maxit] [-folder] [-bestbound]\n");
     exit (-1);
 }
 
@@ -33,6 +33,7 @@ int main (int argc, char **argv) {
     int iterations = 50;
     bool MINING = false;
     bool DEFAULTFOLDER = true;
+    char best_sol_bound[32] = "";
     stringstream ss;
 
     for (int i=2; i<argc; i+=2) {
@@ -54,6 +55,10 @@ int main (int argc, char **argv) {
         if (strcmp(argv[i], "-folder")==0) {
             DEFAULTFOLDER = false;
             ss << argv[i+1];
+            continue;
+        }
+        if (strcmp(argv[i], "-bestbound")==0) {
+            sprintf(best_sol_bound, " -earlystopbound %s", argv[i+1]);
             continue;
         }
     }
@@ -105,7 +110,7 @@ int main (int argc, char **argv) {
 
     for(int seed=1;seed<=max_seed;seed++){
         buffer.str("");
-        buffer << "./bin/steiner instances/"<< instance_path << " -seed " << seed << " -msit " << iterations << " -elite "<< elite_cap << " " << mining <<"-folder " << output_folder;
+        buffer << "./bin/steiner instances/"<< instance_path << " -seed " << seed << " -msit " << iterations << " -elite "<< elite_cap << " " << mining <<"-folder " << output_folder << " -timelimit 3600" <<  best_sol_bound;
         // buffer << "./bin/steiner " << output_folder_path << "/" << instance_name << "_preproceded.stp " << " -seed " << seed << " -msit " << iterations << " -elite "<< elite_cap << " " << mining <<"-folder " << output_folder;
         system(buffer.str().c_str());
 
@@ -154,6 +159,13 @@ int main (int argc, char **argv) {
             fprintf(json, ",");
         fprintf(json, "\n");
         fflush(json);
+
+        ss.str("");
+        ss << output_folder_path << "/" << seed << "/bestSol.txt";
+        file_name = ss.str();
+        if (!fopen(file_name.c_str(), "r")){
+            break;
+        }
     }
     fprintf(json, "}");
     fclose(json);

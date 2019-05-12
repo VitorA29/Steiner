@@ -557,7 +557,7 @@ public:
 				RunMultistart(g, mstype, msit, bestfound, bestknown, config, name, NULL, &executionLog, &bestSolution);
 			}
 			else{
-				EliteMultistart(bestSolution, msit, elite_cap, "eliteFile", config, bestfound, output_folder);
+				EliteMultistart(bestSolution, msit, elite_cap, "eliteFile", config, bestfound, output_folder, &executionLog);
 			}
 		}
 
@@ -863,7 +863,7 @@ public:
 
 
 
-	static void EliteMultistart (SteinerSolution &solution, int maxit, int capacity, char *outprefix, SteinerConfig *config, EdgeCost &bestfound, char *output_folder) {
+	static void EliteMultistart (SteinerSolution &solution, int maxit, int capacity, char *outprefix, SteinerConfig *config, EdgeCost &bestfound, char *output_folder, ExecutionLog *executionLogPtr) {
 		Graph &g = *solution.g;
 
 		SteinerSolution bestsol(&g);
@@ -875,7 +875,7 @@ public:
 
 		SolutionPool elite(capacity);
 
-		int comb_iterations = 4;
+		int comb_iterations = 5;
 
 		int num_iterations = maxit/comb_iterations + (maxit%comb_iterations==0?0:1);
 
@@ -883,17 +883,17 @@ public:
 			CombinationMultistart(solution, comb_iterations, capacity, NULL, 0, config);
 			EdgeCost curcost = solution.GetCost();
 
-			fprintf (stderr, "Should be adding created solution %.0f to capacity %d.\n", (double)curcost, capacity);
-			fflush(stderr);
+			fprintf (stdout, "Should be adding created solution %.0f to capacity %d.\n", (double)curcost, capacity);
+			fflush(stdout);
 			int pos1 = elite.Add(&solution);
 			//int pos1 = -1;
 			CascadedCombination(solution, combsol, elite, -1, random, config);
 			curcost = solution.GetCost();
 
-			fprintf (stderr, "Should be adding combined solution %.0f to capacity %d.\n", (double)curcost, capacity);
+			fprintf (stdout, "Should be adding combined solution %.0f to capacity %d.\n", (double)curcost, capacity);
 			int pos2 = elite.Add(&solution);
 
-			fprintf (stderr, "[%d,%d:%.0f] ", pos1, pos2, (double)solution.GetCost());
+			fprintf (stdout, "[%d,%d:%.0f] ", pos1, pos2, (double)solution.GetCost());
 
 			if (curcost < bestcost) {
 				bestsol.CopyFrom(&solution);
@@ -901,9 +901,29 @@ public:
 				bestfound = curcost;
 			}
 
-			fprintf (stderr, "Iteration %d: %.0f, pool: %d\n", i, (double)bestsol.GetCost(), elite.GetCount());
+			fprintf (stdout, "Iteration %d: %.0f, pool: %d\n", i, (double)bestsol.GetCost(), elite.GetCount());
 
-			elite.Output(stderr, 8, output_folder);
+			elite.Output(stdout, 8, output_folder);
+
+			if (config && bestcost <= config->EARLY_STOP_BOUND) {
+				fprintf (stdout, "Early stop!\n");
+				char fname[6+1+strlen(output_folder)+1+11];
+				sprintf(fname,"output/%s/bestSol.txt", output_folder);
+				FILE *f_best_sol = fopen(fname, "w");
+				bestsol.Output(f_best_sol);
+				fclose(f_best_sol);
+				break;
+			}
+
+			if (config && config->TIME_LIMIT > 0 && executionLogPtr != nullptr && executionLogPtr->timerPtr->getTime() >= config->TIME_LIMIT){
+				fprintf (stdout, "Timeout stop!\n");
+				char fname[6+1+strlen(output_folder)+1+14];
+				sprintf(fname,"output/%s/timeoutSol.txt", output_folder);
+				FILE *f_best_sol = fopen(fname, "w");
+				bestsol.Output(f_best_sol);
+				fclose(f_best_sol);
+				break;
+			}
 		}
 
 		char fname[6+2+14+strlen(output_folder)+1];
@@ -913,7 +933,6 @@ public:
 		fclose(f_elite_count);
 
 		solution.CopyFrom(&bestsol);
-
 
 	}
 
@@ -1489,8 +1508,9 @@ public:
 				fprintf (stderr, "Stopping at iteration %d.\n", i);	
 				break;
 			}
-			if (config->TIME_LIMIT > 0 && executionLogPtr->timerPtr->getTime() >= config->TIME_LIMIT) {
-				fprintf(stderr, "Stopping at iteration %d because of time limit of %2.f sec (%.2f sec passed).\n", i, config->TIME_LIMIT, executionLogPtr->timerPtr->getTime());
+			if (config->TIME_LIMIT > 0 && executionLogPtr != nullptr && executionLogPtr->timerPtr->getTime() >= config->TIME_LIMIT) {
+				fprintf(stdout, "Stopping at iteration %d because of time limit of %2.f sec (%.2f sec passed).\n", i, config->TIME_LIMIT, executionLogPtr->timerPtr->getTime());
+				fflush(stdout);
 				break;
 			}
 
