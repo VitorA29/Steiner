@@ -203,13 +203,14 @@ def gerar_estatistica():
                         solutions_with_inviability += 1
                     try:
                         seeds_with_mining += 1
-                        pattern_union = set(analyze_seed["pattern_union"])
                         elite_edges = set(analyze_seed["elite_edges"])
+                        pattern_union = set(analyze_seed["pattern_union"]).intersection(elite_edges)
                         num_diff_edges_sol += len(elite_edges.difference(pattern_union))
                         num_diff_edges_pattern += len(pattern_union.difference(elite_edges))
                         num_intersect_edges += len(elite_edges.intersection(pattern_union))
 
-                        pattern_vertex = set(analyze_seed["pattern_vertex"])
+                        pattern_vertex = set(analyze_seed["pattern_vertex"]).intersection(steiner_vertices)
+                        log.write(str(pattern_vertex))
                         num_diff_vertex_sol += len(steiner_vertices.difference(pattern_vertex))
                         num_diff_vertex_pattern += len(pattern_vertex.difference(steiner_vertices))
                         num_intersect_vertex += len(steiner_vertices.intersection(pattern_vertex))
@@ -234,9 +235,9 @@ def gerar_estatistica():
         row += 1
         legenda = [
             "A = Arestas da solução",
-            "B = Arestas da união de padroes",
+            "B = Arestas da união de padroes que estão na melhor solução",
             "C = Vértices não terminais da solução",
-            "D = Vértices da união de padroes"
+            "D = Vértices da união de padroes que estão na melhor solução"
         ]
         for l in legenda:
             row += 1
