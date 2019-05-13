@@ -110,7 +110,7 @@ int main (int argc, char **argv) {
 
     for(int seed=1;seed<=max_seed;seed++){
         buffer.str("");
-        buffer << "./bin/steiner instances/"<< instance_path << " -seed " << seed << " -msit " << iterations << " -elite "<< elite_cap << " " << mining <<"-folder " << output_folder << " -timelimit 3600" <<  best_sol_bound;
+        buffer << "./bin/steiner instances/"<< instance_path << " -seed " << seed << " -msit " << iterations << " -elite "<< elite_cap << " " << mining <<"-folder " << output_folder << " -timelimit 1800" <<  best_sol_bound;
         // buffer << "./bin/steiner " << output_folder_path << "/" << instance_name << "_preproceded.stp " << " -seed " << seed << " -msit " << iterations << " -elite "<< elite_cap << " " << mining <<"-folder " << output_folder;
         system(buffer.str().c_str());
 
@@ -155,15 +155,18 @@ int main (int argc, char **argv) {
             fprintf(json, "\n");
         }
         fprintf(json, "\t\t\]\n\t}");
-        if(seed<max_seed)
-            fprintf(json, ",");
-        fprintf(json, "\n");
-        fflush(json);
 
         ss.str("");
         ss << output_folder_path << "/" << seed << "/bestSol.txt";
         file_name = ss.str();
-        if (!fopen(file_name.c_str(), "r")){
+
+        if(seed<max_seed && !fopen(file_name.c_str(), "r")) {
+            fprintf(json, ",");
+        }
+        fprintf(json, "\n");
+        fflush(json);
+
+        if (fopen(file_name.c_str(), "r")){
             break;
         }
     }

@@ -59,6 +59,7 @@ def main():
                 bash_cmd += " -bestbound " + str(opt[instance_name])
 
             os.system(bash_cmd)
+            print("output/" + output_folder + "/" + instance_name + "/" + instance_name + ".json")
             with open("output/" + output_folder + "/" + instance_name + "/" + instance_name + ".json") as f:
                 data = json.load(f)
                 report[instance_name] = data
