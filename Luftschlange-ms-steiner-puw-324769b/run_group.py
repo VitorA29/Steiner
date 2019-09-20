@@ -24,6 +24,10 @@ def main():
     if not sys.argv[5] == 0:
         early_stop = True
 
+    # prepare model folder
+    if data_mining == '1':
+        os.system("mkdir output/" + str(timestamp) + "/model")
+
     #Opening instances folder
     report_dict = dict()
     deviation_dict = dict()
@@ -66,9 +70,28 @@ def main():
             os.system("rm output/" + output_folder + "/" + instance_name + "/" + instance_name + ".json")
 
             if data_mining == '1':
+                # prepare the model file name
+                model_file_name = "output/" + str(timestamp) + "/model/" + instance_name + ".eu"
+
+                # find the best cost among all seeds
+                best_cost = -1
+                for seed in report[instance_name].keys():
+                    for cost in report[instance_name][str(seed)]["elite"]:
+                        if best_cost == -1 or ( cost < best_cost and cost < report[instance_name][str(seed)]["best"] ):
+                            best_cost = cost
+
+                with open(model_file_name, 'a') as f:
+                    f.write(str(best_cost) + "\n")
+
+                keep_file = False
+
                 #Building pattern instance file
-                for pattern_file_marker in ["V", "E"]:
+                for pattern_file_marker in ["E", "V"]:
                     pattern_dict = dict()
+
+                    # creating the array of all patterns
+                    pattern_array = list()
+
                     for seed in range (1, int(max_seed) + 1):
                         try:
                             with open("output/" + str(timestamp) + "/" + folder + "/" + instance_name + "/" + str(seed) + "/pattern" + pattern_file_marker + ".txt") as pattern_file:
@@ -76,6 +99,9 @@ def main():
                                 while line:
                                     line_split = line.split(";")
                                     if(len(line_split) == 3):
+                                        # adding the line to the patterns array(removing the line break)
+                                        pattern_array.append(line)
+                                        
                                         # preparing new dict entry
                                         pattern_execution_dict = dict()
                                         pattern_execution_dict["seed"] = seed
@@ -117,15 +143,28 @@ def main():
                         with open(pattern_dict_json_name, 'w') as f:
                             json.dump(reversed_pattern_dict, f, indent=4)
 
+                    # create a single pattern file
+                    if (len(pattern_array) > 0):
+                        keep_file = True
+                    with open(model_file_name, 'a') as f:
+                        f.write(str(len(pattern_array)) + "\n")
+                        for entry in pattern_array:
+                            f.write(entry)
+                
+                # delete the file if there was no pattern mining
+                if not keep_file:
+                    os.remove(model_file_name)
+
+
         #Validating group
         deviation_data = dict()
         elite_data = dict()
         for key in report:
-                    if not len(report[key]) > 0:
-                        break
-                    average = sum(seed_execution["best"] for seed_execution in report[key].values())/len(report[key])
-                    deviation_data[key] = ((average-opt[key])/opt[key])
-                    elite_data[key] = [len(seed_execution["elite"]) for seed_execution in report[key].values()]
+            if not len(report[key]) > 0:
+                break
+            average = sum(seed_execution["best"] for seed_execution in report[key].values())/len(report[key])
+            deviation_data[key] = ((average-opt[key])/opt[key])
+            elite_data[key] = [len(seed_execution["elite"]) for seed_execution in report[key].values()]
 
         #Saving execution reports
         elapsed_folder_time = time.time() - start_folder_time
