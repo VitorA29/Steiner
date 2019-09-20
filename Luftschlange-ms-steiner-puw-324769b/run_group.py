@@ -1,6 +1,6 @@
 import os
 from os.path import isfile, join
-import datetime, sys, time, json
+import datetime, sys, time, json, zipfile
 from pprint import pprint
 from collections import OrderedDict
 
@@ -187,6 +187,17 @@ def main():
             json.dump(elite_dict, f, indent=4, sort_keys=True)
         with open("output/" + str(timestamp) + "/results.json", 'w') as f:
             json.dump(report_dict, f, indent=4, sort_keys=True)
+
+    # zipping the pattern files
+    if data_mining == '1':
+        model_path_name = "output/" + str(timestamp) + "/model"
+        zip_file = zipfile.ZipFile(model_path_name +'.zip', 'w')
+        for root, directories, files in os.walk(model_path_name):
+            for filename in files:
+                # get all files in the model folder.
+                write_path = root.split(model_path_name)[1][1:] + "/" + filename
+                zip_file.write(join(root, filename), write_path)
+        os.system("rm -r output/" + str(timestamp) + "/model")
 
 if __name__ == "__main__":
     main()
