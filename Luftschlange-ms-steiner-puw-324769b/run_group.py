@@ -12,7 +12,7 @@ def main():
 
     #Getting start time and iterations
     details_report = dict()
-    time_format = '%H:%M:%S'
+    time_format = "%d:%H:%M:%S"
     start_time = time.time()
     details_report["iterations"] = int(sys.argv[2])
     details_report["max_seed"] = int(sys.argv[3])
